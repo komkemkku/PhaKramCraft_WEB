@@ -1,0 +1,105 @@
+:root {
+  --purple-dark: #543082;
+  --purple-medium: #7c59a2;
+  --purple-soft: #f4f0fa;
+  --body-bg: #f6f6fa;
+  --gray-soft: #f1f1f7;
+  --text-dark: #2b2342;
+  --text-footer: #ede6f8;
+  --footer-bg: #352c4d;
+}
+
+body,
+.bg-body {
+  background: var(--body-bg) !important;
+  color: var(--text-dark);
+  font-family: "Sarabun", sans-serif;
+}
+.logo-icon {
+  font-size: 1.6rem;
+}
+.text-purple {
+  color: var(--purple-dark) !important;
+}
+.text-purple-dark {
+  color: #543082 !important;
+}
+.bg-purple-soft {
+  background-color: var(--purple-soft) !important;
+  color: var(--purple-dark) !important;
+}
+
+.navbar-nav .nav-link {
+  font-weight: 500;
+  font-size: 1rem;
+  transition: color 0.2s;
+}
+.navbar-nav .nav-link:hover {
+  color: var(--purple-medium) !important;
+  text-decoration: underline;
+}
+.icon-btn {
+  color: var(--purple-dark);
+  font-size: 1.15rem;
+  padding: 4px 8px;
+  border-radius: 50%;
+  transition: background 0.2s, color 0.2s;
+}
+.icon-btn:hover {
+  background: var(--gray-soft);
+  color: var(--purple-medium);
+}
+.search-input {
+  min-width: 130px;
+  max-width: 180px;
+  border-radius: 30px;
+  border: 1px solid #e1dbe8;
+  background: #fff;
+  padding-left: 12px;
+}
+
+.footer-custom {
+  background: var(--footer-bg) !important;
+  color: var(--text-footer);
+  margin-top: auto;
+  width: 100%;
+}
+.footer-title {
+  font-weight: 600;
+  color: var(--purple-medium);
+  font-size: 1.03rem;
+}
+.footer-link {
+  color: #ede6f8;
+  font-size: 0.97rem;
+  text-decoration: none;
+  transition: color 0.15s;
+}
+.footer-link:hover,
+.footer-link.active {
+  color: var(--purple-medium);
+  text-decoration: underline;
+}
+.text-footer-light {
+  color: #c6c5d2;
+}
+
+.about-card {
+  border-radius: 1.5rem;
+  background: #fff;
+  box-shadow: 0 2px 20px rgba(81, 49, 142, 0.1);
+  color: var(--text-dark);
+}
+.about-quote {
+  font-size: 1.06rem;
+  font-family: "Sarabun", sans-serif;
+  border-left: 4px solid var(--purple-medium);
+}
+@media (max-width: 575.98px) {
+  .about-card {
+    padding: 1.2rem !important;
+  }
+  .about-quote {
+    font-size: 0.98rem;
+  }
+}

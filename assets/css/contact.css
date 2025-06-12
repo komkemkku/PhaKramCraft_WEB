@@ -1,0 +1,122 @@
+:root {
+  --purple-dark: #543082;
+  --purple-medium: #7c59a2;
+  --purple-soft: #bba5d6;
+  --body-bg: #f6f6fa;
+  --gray-soft: #f1f1f7;
+  --text-dark: #2b2342;
+  --text-footer: #ede6f8;
+  --footer-bg: #352c4d;
+}
+
+body,
+.bg-body {
+  background: var(--body-bg) !important;
+  color: var(--text-dark);
+  font-family: "Sarabun", sans-serif;
+}
+.logo-icon {
+  font-size: 1.6rem;
+}
+.text-purple {
+  color: var(--purple-dark) !important;
+}
+.bg-purple-soft {
+  background-color: var(--purple-soft) !important;
+  color: var(--purple-dark) !important;
+}
+
+.navbar-nav .nav-link {
+  font-weight: 500;
+  font-size: 1rem;
+  transition: color 0.2s;
+}
+.navbar-nav .nav-link:hover {
+  color: var(--purple-medium) !important;
+  text-decoration: underline;
+}
+.icon-btn {
+  color: var(--purple-dark);
+  font-size: 1.15rem;
+  padding: 4px 8px;
+  border-radius: 50%;
+  transition: background 0.2s, color 0.2s;
+}
+.icon-btn:hover {
+  background: var(--gray-soft);
+  color: var(--purple-medium);
+}
+.search-input {
+  min-width: 130px;
+  max-width: 180px;
+  border-radius: 30px;
+  border: 1px solid #e1dbe8;
+  background: #fff;
+  padding-left: 12px;
+}
+
+.footer-custom {
+  background: var(--footer-bg) !important;
+  color: var(--text-footer);
+  margin-top: auto;
+  width: 100%;
+}
+.footer-title {
+  font-weight: 600;
+  color: var(--purple-soft);
+  font-size: 1.03rem;
+}
+.footer-link {
+  color: #ede6f8;
+  font-size: 0.97rem;
+  text-decoration: none;
+  transition: color 0.15s;
+}
+.footer-link:hover {
+  color: var(--purple-soft);
+  text-decoration: underline;
+}
+.text-footer-light {
+  color: #c6c5d2;
+}
+
+.contact-card {
+  background: #fff;
+  border-radius: 1.2rem;
+  box-shadow: 0 2px 14px rgba(81, 49, 142, 0.08);
+  padding: 2rem 1.3rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+  transition: box-shadow 0.18s;
+}
+.contact-card:hover {
+  box-shadow: 0 6px 32px rgba(96, 74, 224, 0.12);
+}
+.contact-icon {
+  font-size: 2.2rem;
+  color: #7c59a2;
+  width: 3rem;
+  text-align: center;
+  flex-shrink: 0;
+}
+.contact-detail-title {
+  font-weight: bold;
+  color: #543082;
+  font-size: 1.08rem;
+}
+.contact-detail-value {
+  color: #564c6b;
+  font-size: 1.02rem;
+  word-break: break-all;
+}
+@media (max-width: 575.98px) {
+  .contact-card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .contact-icon {
+    font-size: 2rem;
+  }
+}
