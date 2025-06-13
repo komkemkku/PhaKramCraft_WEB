@@ -159,3 +159,47 @@ body,
     height: 120px;
   }
 }
+
+/* Pagination custom for PhaKramCraft */
+.pagination {
+  --bs-pagination-color: #543082;
+  --bs-pagination-active-bg: #7c59a2;
+  --bs-pagination-active-border-color: #7c59a2;
+  --bs-pagination-hover-color: #7c59a2;
+  --bs-pagination-focus-color: #7c59a2;
+  --bs-pagination-focus-bg: #ede6f8;
+  --bs-pagination-bg: #fff;
+  --bs-pagination-border-color: #ede6f8;
+  --bs-pagination-hover-bg: #f4f0fa;
+  --bs-pagination-disabled-bg: #f4f0fa;
+  --bs-pagination-disabled-color: #c6c5d2;
+}
+
+.pagination .page-link {
+  border-radius: 0.7rem;
+  margin: 0 2px;
+  color: var(--bs-pagination-color);
+  background: var(--bs-pagination-bg);
+  border: 1.5px solid var(--bs-pagination-border-color);
+  transition: background 0.15s, color 0.13s, border 0.13s;
+  font-weight: 500;
+}
+
+.pagination .page-link:hover,
+.pagination .page-link:focus {
+  background: var(--bs-pagination-hover-bg);
+  color: var(--bs-pagination-hover-color);
+  border-color: #bba5d6;
+}
+
+.pagination .page-item.active .page-link {
+  background: var(--bs-pagination-active-bg);
+  border-color: var(--bs-pagination-active-border-color);
+  color: #fff;
+}
+
+.pagination .page-item.disabled .page-link {
+  background: var(--bs-pagination-disabled-bg);
+  color: var(--bs-pagination-disabled-color);
+  border-color: var(--bs-pagination-border-color);
+}

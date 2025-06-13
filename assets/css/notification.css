@@ -1,0 +1,27 @@
+.bg-purple-soft {
+  background: #f4f0fa !important;
+}
+.text-purple-dark {
+  color: #543082 !important;
+}
+.notification-list li {
+  font-size: 1.04rem;
+  color: #443262;
+}
+.notification-list .text-success {
+  color: #35b86a !important;
+}
+.toast-header {
+  border-radius: 0.6rem 0.6rem 0 0;
+}
+.toast {
+  border-radius: 0.6rem;
+  min-width: 310px;
+  max-width: 380px;
+}
+@media (max-width: 575.98px) {
+  .toast {
+    min-width: 200px;
+    max-width: 95vw;
+  }
+}

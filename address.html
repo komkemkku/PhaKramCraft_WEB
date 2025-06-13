@@ -4,11 +4,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>สินค้าทั้งหมด | PhaKramCraft</title>
+    <title>ที่อยู่จัดส่ง | PhaKramCraft</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="/assets/css/all-products.css">
-    <link rel="stylesheet" href="/assets/css/notification.css">
+    <link rel="stylesheet" href="/assets/css/profile.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="/assets/css/address.css">
 </head>
 
 <body class="bg-body d-flex flex-column min-vh-100">
@@ -16,7 +16,7 @@
     <header class="shadow-sm bg-white sticky-top">
         <nav class="navbar navbar-expand-lg py-2">
             <div class="container">
-                <a class="navbar-brand fw-bold d-flex align-items-center gap-2 text-purple" href="index.html">
+                <a class="navbar-brand fw-bold d-flex align-items-center gap-2 text-purple" href="/index.html">
                     <span class="logo-icon">🧵</span>
                     <span>PhaKramCraft</span>
                 </a>
@@ -27,7 +27,7 @@
                 <div class="collapse navbar-collapse mt-2 mt-lg-0" id="mainNav">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0 gap-lg-2">
                         <li class="nav-item">
-                            <a class="nav-link text-purple active" href="/all-products.html">สินค้าทั้งหมด</a>
+                            <a class="nav-link text-purple" href="/all-products.html">สินค้าทั้งหมด</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-purple" href="/contact.html">ติดต่อเรา</a>
@@ -40,12 +40,16 @@
                         onsubmit="return false;">
                         <input class="form-control form-control-sm search-input" type="search"
                             placeholder="ค้นหาสินค้า..." id="searchInput">
+
                         <button class="btn btn-link icon-btn" title="แจ้งเตือน" id="showNotificationBtn">
                             <i class="bi bi-bell"></i>
                         </button>
+
                         <button class="btn btn-link icon-btn" onclick="window.location='wishlist.html'" title="ถูกใจ">
                             <i class="bi bi-heart"></i>
                         </button>
+
+
                         <button type="button" class="btn btn-link icon-btn position-relative" title="ตะกร้าสินค้า"
                             onclick="window.location='cart.html'">
                             <i class="bi bi-cart"></i>
@@ -55,6 +59,7 @@
                                 <!-- จำนวนจะแสดงที่นี่ -->
                             </span>
                         </button>
+
                         <button class="btn btn-link icon-btn" id="userBtn" title="ผู้ใช้งาน" type="button">
                             <i class="bi bi-person-circle"></i>
                         </button>
@@ -64,39 +69,108 @@
             </div>
         </nav>
     </header>
-    <!-- Content -->
-    <main class="flex-grow-1">
-        <section class="bg-body-secondary py-4">
-            <div class="container">
-                <h1 class="mb-4 text-purple fw-bold">สินค้าทั้งหมด</h1>
-                <!-- ตัวเลือกค้นหาและหมวดหมู่ -->
-                <div class="row mb-4">
-                    <div class="col-md-4 col-12 mb-2 mb-md-0">
-                        <select class="form-select" id="categorySelect">
-                            <option value="all">ประเภทสินค้าทั้งหมด</option>
-                            <option value="ผ้าพันคอ">ผ้าพันคอ</option>
-                            <option value="ผ้าคลุมไหล่">ผ้าคลุมไหล่</option>
-                            <option value="ผ้าซิ่น">ผ้าซิ่น</option>
-                            <option value="เสื้อ">เสื้อ</option>
-                        </select>
-                    </div>
-                    <div class="col-md-5 col-12">
-                        <input class="form-control" type="search" placeholder="ค้นหาชื่อ/รายละเอียดสินค้า..."
-                            id="searchInputProducts">
+
+    <main class="flex-grow-1 bg-body-secondary py-4">
+        <div class="container">
+            <div class="row">
+                <!-- Sidebar Menu -->
+                <div class="col-lg-3 mb-4 mb-lg-0">
+                    <div class="profile-menu card p-0 shadow-sm">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center mb-4">
+                                <div class="profile-avatar me-3">
+                                    <i class="bi bi-person-circle"></i>
+                                </div>
+                                <div>
+                                    <div class="fw-bold text-purple">คุณผู้ใช้</div>
+                                    <div class="small text-muted" id="profileEmail">user@email.com</div>
+                                </div>
+                            </div>
+                            <ul class="nav flex-column gap-2">
+                                <li class="nav-item">
+                                    <a href="profile.html" class="nav-link">
+                                        <i class="bi bi-person-lines-fill me-2"></i> ข้อมูลส่วนตัว
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="address.html" class="nav-link active">
+                                        <i class="bi bi-geo-alt me-2"></i> จัดการที่อยู่จัดส่ง
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="orders.html" class="nav-link">
+                                        <i class="bi bi-clipboard-check me-2"></i> จัดการคำสั่งซื้อ
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
-                <div class="row g-4" id="productList">
-                    <!-- สินค้าถูกเติมโดย all-products.js -->
+                <!-- Main Content -->
+                <div class="col-lg-9">
+                    <div class="card shadow-sm">
+                        <div class="card-body p-4">
+                            <div class="d-flex justify-content-between align-items-center mb-4">
+                                <h3 class="fw-bold text-purple mb-0">
+                                    <i class="bi bi-geo-alt me-2"></i>ที่อยู่จัดส่ง
+                                </h3>
+                                <button class="btn btn-purple" id="addAddressBtn">
+                                    <i class="bi bi-plus-circle me-2"></i>เพิ่มที่อยู่ใหม่
+                                </button>
+                            </div>
+                            <div id="addressList" class="list-group list-group-flush mb-3">
+                                <!-- ที่อยู่จะแสดงตรงนี้ -->
+                            </div>
+                            <div id="addressEmpty" class="text-center text-secondary py-5 d-none">
+                                <i class="bi bi-house-x" style="font-size: 2rem;"></i>
+                                <div class="mt-2">ยังไม่มีข้อมูลที่อยู่จัดส่ง</div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <!-- Pagination -->
-                <nav aria-label="Page navigation" class="mt-4">
-                    <ul class="pagination justify-content-center" id="pagination">
-                        <!-- สร้างด้วย JS -->
-                    </ul>
-                </nav>
             </div>
-        </section>
+        </div>
+
+        <!-- Modal เพิ่ม/แก้ไขที่อยู่ -->
+        <div class="modal fade" id="addressModal" tabindex="-1" aria-labelledby="addressModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <form class="modal-content" id="addressForm" autocomplete="off">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addressModalLabel">เพิ่มที่อยู่จัดส่ง</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="ปิด"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-2">
+                            <label class="form-label text-purple" for="fullname">ชื่อ-นามสกุล</label>
+                            <input type="text" class="form-control" id="fullname" required>
+                        </div>
+                        <div class="mb-2">
+                            <label class="form-label text-purple" for="tel">เบอร์โทรศัพท์</label>
+                            <input type="tel" class="form-control" id="tel" required>
+                        </div>
+                        <div class="mb-2">
+                            <label class="form-label text-purple" for="address">ที่อยู่</label>
+                            <textarea class="form-control" id="address" rows="2" required></textarea>
+                        </div>
+                        <div class="mb-2">
+                            <label class="form-label text-purple" for="province">จังหวัด</label>
+                            <input type="text" class="form-control" id="province" required>
+                        </div>
+                        <div class="mb-2">
+                            <label class="form-label text-purple" for="postcode">รหัสไปรษณีย์</label>
+                            <input type="text" class="form-control" id="postcode" required pattern="\d{5}">
+                        </div>
+                        <div id="addressError" class="text-danger small mt-2 d-none"></div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-purple">บันทึก</button>
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">ยกเลิก</button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </main>
+
     <!-- Footer -->
     <footer class="footer-custom py-4 mt-auto">
         <div class="container">
@@ -158,80 +232,9 @@
         </div>
     </div>
 
-    <!-- User Account Modal (วางนอก header, ใน body) -->
-    <div class="modal fade" id="userModal" tabindex="-1" aria-labelledby="userModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content user-modal-content">
-                <div class="modal-header border-0 pb-0">
-                    <div class="d-flex align-items-center gap-3">
-                        <div class="user-avatar">
-                            <i class="bi bi-person-circle"></i>
-                        </div>
-                        <div>
-                            <div class="fw-bold text-purple-dark" style="font-size:1.15rem;">บัญชีผู้ใช้</div>
-                            <div class="text-secondary small">สวัสดี, คุณผู้ใช้</div>
-                        </div>
-                    </div>
-                    <button type="button" class="btn-close ms-auto" data-bs-dismiss="modal" aria-label="ปิด"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="list-group list-group-flush mb-3">
-                        <a href="#" class="list-group-item list-group-item-action user-menu-link"
-                            onclick="goToProfile()">
-                            <i class="bi bi-person-lines-fill me-2"></i> แก้ไขข้อมูลส่วนตัว
-                        </a>
-                        <a href="#" class="list-group-item list-group-item-action user-menu-link"
-                            onclick="goToAddress()">
-                            <i class="bi bi-geo-alt me-2"></i> จัดการที่อยู่จัดส่ง
-                        </a>
-                        <a href="#" class="list-group-item list-group-item-action user-menu-link"
-                            onclick="goToOrders()">
-                            <i class="bi bi-clipboard-check me-2"></i> จัดการคำสั่งซื้อ
-                        </a>
-                    </div>
-                    <button type="button" class="btn btn-outline-danger w-100" onclick="logoutUser()">
-                        <i class="bi bi-box-arrow-right me-2"></i> ออกจากระบบ
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="position-fixed top-0 end-0 p-3" style="z-index: 2000">
-        <div id="logoutToast" class="toast align-items-center text-bg-light border-0 shadow-sm" role="alert"
-            aria-live="assertive" aria-atomic="true">
-            <div class="d-flex">
-                <div class="toast-body text-success fw-semibold">
-                    <i class="bi bi-check-circle-fill me-2"></i> ออกจากระบบสำเร็จ
-                </div>
-                <button type="button" class="btn-close ms-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-            </div>
-        </div>
-    </div>
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="script.js"></script>
-    <script src="/assets/js/all-products.js"></script>
+    <script src="/assets/js/address.js"></script>
     <script src="/assets/js/notification.js"></script>
-    <script src="/assets/js/cart.js"></script>
-    <script src="/assets/js/user-popup.js"></script>
-    <script>
-        function logoutUser() {
-            // ลบ JWT Token
-            localStorage.removeItem('jwt_token');
-            // แสดง Toast ออกจากระบบ
-            var toastEl = document.getElementById('logoutToast');
-            if (toastEl) {
-                var toast = new bootstrap.Toast(toastEl);
-                toast.show();
-                setTimeout(function () {
-                    window.location = 'login.html';
-                }, 1300);
-            } else {
-                window.location = 'login.html';
-            }
-        }
-    </script>
 </body>
 
 </html>

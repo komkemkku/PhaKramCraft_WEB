@@ -1,0 +1,104 @@
+:root {
+  --purple-dark: #543082;
+  --purple-medium: #7c59a2;
+  --purple-soft: #f4f0fa;
+  --body-bg: #f6f6fa;
+  --text-dark: #2b2342;
+  --footer-bg: #352c4d;
+}
+
+body,
+.bg-body {
+  background: var(--body-bg) !important;
+  color: var(--text-dark);
+  font-family: "Sarabun", sans-serif;
+}
+.logo-icon {
+  font-size: 1.6rem;
+}
+.text-purple {
+  color: var(--purple-dark) !important;
+}
+.text-purple-dark {
+  color: #543082 !important;
+}
+.bg-purple-soft {
+  background-color: var(--purple-soft) !important;
+  color: var(--purple-dark) !important;
+}
+
+.footer-custom {
+  background: var(--footer-bg) !important;
+  color: #ede6f8;
+  margin-top: auto;
+  width: 100%;
+}
+.footer-title {
+  font-weight: 600;
+  color: var(--purple-medium);
+  font-size: 1.03rem;
+}
+.footer-link {
+  color: #ede6f8;
+  font-size: 0.97rem;
+  text-decoration: none;
+  transition: color 0.15s;
+}
+.footer-link:hover,
+.footer-link.active {
+  color: var(--purple-medium);
+  text-decoration: underline;
+}
+.text-footer-light {
+  color: #c6c5d2;
+}
+
+.user-modal-content {
+  border-radius: 1.3rem;
+  background: #fff;
+  box-shadow: 0 6px 40px rgba(81, 49, 142, 0.1);
+  padding-bottom: 1rem;
+}
+
+.user-avatar {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: var(--purple-soft);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.2rem;
+  color: var(--purple-dark);
+  border: 2px solid #e7daf5;
+  box-shadow: 0 2px 6px #ede6f8;
+}
+.user-menu-link {
+  font-size: 1.09rem;
+  color: var(--purple-dark);
+  border-radius: 0.8rem !important;
+  margin-bottom: 3px;
+  transition: background 0.15s, color 0.14s;
+}
+.user-menu-link:hover {
+  background: var(--purple-soft);
+  color: var(--purple-medium);
+}
+.btn-outline-danger {
+  font-size: 1.05rem;
+  padding: 0.52rem 1.3rem;
+  border-radius: 1.5rem;
+}
+@media (max-width: 575.98px) {
+  .user-modal-content {
+    padding-bottom: 0.5rem;
+  }
+  .user-avatar {
+    width: 40px;
+    height: 40px;
+    font-size: 1.4rem;
+  }
+  .user-menu-link {
+    font-size: 1rem;
+  }
+}

@@ -1,0 +1,91 @@
+:root {
+  --purple-dark: #543082;
+  --purple-medium: #7c59a2;
+  --purple-soft: #ede6f8;
+  --blue-soft: #e6f3fb;
+}
+
+body.login-bg {
+  background: linear-gradient(120deg, #e9e3fc 60%, #d7e6fb 100%);
+}
+
+.login-card {
+  border-radius: 1.6rem;
+  min-height: 520px;
+  overflow: hidden;
+  background: #fff;
+}
+
+.login-imgbox {
+  background: linear-gradient(120deg, #7752ac 80%, #6fb1fc 100%);
+  min-width: 340px;
+  max-width: 380px;
+  flex: 1 1 340px;
+}
+
+.login-img {
+  width: 160px;
+  border-radius: 1.1rem;
+  box-shadow: 0 3px 24px rgba(81, 49, 142, 0.14);
+}
+
+.text-purple {
+  color: var(--purple-dark) !important;
+}
+.bg-purple {
+  background: var(--purple-medium) !important;
+}
+
+.btn-purple {
+  background: var(--purple-medium);
+  color: #fff;
+  border-radius: 1.2rem;
+  font-weight: 600;
+  font-size: 1.08rem;
+  border: none;
+  transition: background 0.15s;
+}
+.btn-purple:hover,
+.btn-purple:focus {
+  background: var(--purple-dark);
+  color: #fff;
+}
+
+.btn-outline-purple {
+  border: 2px solid var(--purple-medium);
+  color: var(--purple-medium);
+  border-radius: 1.2rem;
+  font-weight: 600;
+  font-size: 1.08rem;
+  background: #fff;
+  transition: color 0.15s, border 0.15s, background 0.13s;
+}
+.btn-outline-purple:hover,
+.btn-outline-purple:focus {
+  background: var(--purple-medium);
+  color: #fff;
+  border-color: var(--purple-dark);
+}
+
+.form-control:focus {
+  border-color: var(--purple-medium);
+  box-shadow: 0 0 0 0.12rem #7c59a224;
+}
+
+@media (max-width: 991.98px) {
+  .login-card {
+    flex-direction: column;
+  }
+  .login-imgbox {
+    display: none !important;
+  }
+}
+@media (max-width: 575.98px) {
+  .login-card {
+    border-radius: 0.7rem;
+    min-height: unset;
+  }
+  .login-img {
+    width: 90px;
+  }
+}

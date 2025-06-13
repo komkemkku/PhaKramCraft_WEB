@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>ข้อมูลส่วนตัว | PhaKramCraft</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/profile.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+</head>
+
+<body class="bg-body d-flex flex-column min-vh-100">
+    <!-- Header -->
+    <header class="shadow-sm bg-white sticky-top">
+        <nav class="navbar navbar-expand-lg py-2">
+            <div class="container">
+                <a class="navbar-brand fw-bold d-flex align-items-center gap-2 text-purple" href="/index.html">
+                    <span class="logo-icon">🧵</span>
+                    <span>PhaKramCraft</span>
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav"
+                    aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse mt-2 mt-lg-0" id="mainNav">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0 gap-lg-2">
+                        <li class="nav-item">
+                            <a class="nav-link text-purple" href="/all-products.html">สินค้าทั้งหมด</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-purple" href="/contact.html">ติดต่อเรา</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-purple" href="/about.html">เกี่ยวกับเรา</a>
+                        </li>
+                    </ul>
+                    <form class="d-flex align-items-center gap-2 ms-lg-4 my-2 my-lg-0" role="search"
+                        onsubmit="return false;">
+                        <input class="form-control form-control-sm search-input" type="search"
+                            placeholder="ค้นหาสินค้า..." id="searchInput">
+
+                        <button class="btn btn-link icon-btn" title="แจ้งเตือน" id="showNotificationBtn">
+                            <i class="bi bi-bell"></i>
+                        </button>
+
+                        <button class="btn btn-link icon-btn" onclick="window.location='wishlist.html'" title="ถูกใจ">
+                            <i class="bi bi-heart"></i>
+                        </button>
+
+
+                        <button type="button" class="btn btn-link icon-btn position-relative" title="ตะกร้าสินค้า"
+                            onclick="window.location='cart.html'">
+                            <i class="bi bi-cart"></i>
+                            <span id="cartCount"
+                                class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-purple-soft"
+                                style="min-width:24px;">
+                                <!-- จำนวนจะแสดงที่นี่ -->
+                            </span>
+                        </button>
+
+                        <button class="btn btn-link icon-btn" id="userBtn" title="ผู้ใช้งาน" type="button">
+                            <i class="bi bi-person-circle"></i>
+                        </button>
+
+                    </form>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <!-- Content -->
+    <main class="flex-grow-1 bg-body-secondary py-4">
+        <div class="container">
+            <div class="row">
+                <!-- Sidebar Menu -->
+                <div class="col-lg-3 mb-4 mb-lg-0">
+                    <div class="profile-menu card p-0 shadow-sm">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center mb-4">
+                                <div class="profile-avatar me-3">
+                                    <i class="bi bi-person-circle"></i>
+                                </div>
+                                <div>
+                                    <div class="fw-bold text-purple">คุณผู้ใช้</div>
+                                    <div class="small text-muted" id="profileEmail">user@email.com</div>
+                                </div>
+                            </div>
+                            <ul class="nav flex-column gap-2">
+                                <li class="nav-item">
+                                    <a href="profile.html" class="nav-link active">
+                                        <i class="bi bi-person-lines-fill me-2"></i> ข้อมูลส่วนตัว
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="address.html" class="nav-link">
+                                        <i class="bi bi-geo-alt me-2"></i> จัดการที่อยู่จัดส่ง
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="orders.html" class="nav-link">
+                                        <i class="bi bi-clipboard-check me-2"></i> จัดการคำสั่งซื้อ
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <!-- Main Form -->
+                <div class="col-lg-9">
+                    <div class="card shadow-sm">
+                        <div class="card-body p-4">
+                            <h3 class="fw-bold text-purple mb-3"><i
+                                    class="bi bi-person-lines-fill me-2"></i>ข้อมูลส่วนตัว</h3>
+                            <form id="profileForm" class="pt-2">
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <label for="firstName" class="form-label text-purple">ชื่อ</label>
+                                        <input type="text" class="form-control" id="firstName" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="lastName" class="form-label text-purple">นามสกุล</label>
+                                        <input type="text" class="form-control" id="lastName" required>
+                                    </div>
+                                </div>
+                                <div class="row g-3 mt-2">
+                                    <div class="col-md-6">
+                                        <label for="email" class="form-label text-purple">อีเมล</label>
+                                        <input type="email" class="form-control" id="email" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="phone" class="form-label text-purple">เบอร์โทรศัพท์</label>
+                                        <input type="tel" class="form-control" id="phone">
+                                    </div>
+                                </div>
+
+                                <!-- เพิ่มบล็อกนี้ต่อท้ายในฟอร์ม -->
+                                <hr class="my-4">
+                                <div class="row g-3 align-items-end">
+                                    <div class="col-md-4">
+                                        <label for="currentPassword" class="form-label text-purple">รหัสผ่านปัจจุบัน
+                                            <span class="text-danger">*</span></label>
+                                        <input type="password" class="form-control" id="currentPassword" required>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="newPassword" class="form-label text-purple">รหัสผ่านใหม่</label>
+                                        <input type="password" class="form-control" id="newPassword" minlength="6">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="confirmNewPassword"
+                                            class="form-label text-purple">ยืนยันรหัสผ่านใหม่</label>
+                                        <input type="password" class="form-control" id="confirmNewPassword"
+                                            minlength="6">
+                                    </div>
+                                </div>
+                                <div class="text-muted small mt-2 mb-3">
+                                    * กรุณาใส่ <b>รหัสผ่านปัจจุบัน</b> เพื่อยืนยันการเปลี่ยนแปลงข้อมูล
+                                    หากต้องการเปลี่ยนรหัสผ่าน ให้กรอกรหัสผ่านใหม่และยืนยันรหัสผ่านใหม่
+                                </div>
+                                <div id="profileError" class="text-danger small mb-3 d-none"></div>
+                                <div class="mt-4">
+                                    <button type="submit" class="btn btn-purple px-4">บันทึกการเปลี่ยนแปลง</button>
+                                    <span id="saveSuccess" class="text-success ms-3 d-none"><i
+                                            class="bi bi-check-circle"></i> บันทึกสำเร็จ!</span>
+                                </div>
+
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer-custom py-4 mt-auto">
+        <div class="container">
+            <div class="row gy-4">
+                <div class="col-12 col-md-3 d-flex align-items-center gap-2 mb-2 mb-md-0">
+                    <span class="logo-icon">🧵</span>
+                    <span class="fw-bold fs-5 text-light">PhaKramCraft</span>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="footer-title mb-1">บริษัทของเรา</div>
+                    <ul class="list-unstyled">
+                        <li><a href="contact.html" class="footer-link">ติดต่อเรา</a></li>
+                        <li><a href="about.html" class="footer-link">เกี่ยวกับเรา</a></li>
+                    </ul>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="footer-title mb-1">ตลาดสินค้า</div>
+                    <ul class="list-unstyled">
+                        <li><a href="all-products.html" class="footer-link">สินค้าทั้งหมด</a></li>
+                        <li><a href="#" class="footer-link">สินค้าแนะนำ</a></li>
+                    </ul>
+                </div>
+                <div class="col-12 col-md-3">
+                    <div class="footer-title mb-1">ข้อมูลส่วนตัว</div>
+                    <ul class="list-unstyled">
+                        <li><a href="profile.html" class="footer-link">ข้อมูลส่วนตัว</a></li>
+                        <li><a href="address.html" class="footer-link">ที่อยู่</a></li>
+                        <li><a href="orders.html" class="footer-link">คำสั่งซื้อ</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="text-center mt-4 small text-footer-light">&copy; 2025 PhaKramCraft. All Rights Reserved.</div>
+        </div>
+    </footer>
+
+    <div class="position-fixed top-0 end-0 p-3" style="z-index: 1080">
+        <div id="notificationToast" class="toast align-items-center text-bg-light border-0 shadow-lg" role="alert"
+            aria-live="assertive" aria-atomic="true">
+            <div class="toast-header bg-purple-soft text-purple-dark">
+                <i class="bi bi-bell-fill me-2"></i>
+                <strong class="me-auto">การแจ้งเตือน</strong>
+                <small class="text-muted">ขณะนี้</small>
+                <button type="button" class="btn-close ms-2" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body p-3">
+                <ul class="notification-list mb-0 ps-3">
+                    <li>
+                        <span class="fw-semibold text-purple">รอชำระเงิน:</span>
+                        <span>คำสั่งซื้อ #00123</span>
+                        <a href="#" class="ms-2 text-decoration-underline small">ชำระเงิน</a>
+                    </li>
+                    <li class="mt-2">
+                        <span class="fw-semibold text-success">จัดส่งแล้ว:</span>
+                        <span>คำสั่งซื้อ #00118</span>
+                        <a href="#" class="ms-2 text-decoration-underline small">ตรวจสอบ</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/assets/js/profile.js"></script>
+    <script src="/assets/js/notification.js"></script>
+</body>
+
+</html>
