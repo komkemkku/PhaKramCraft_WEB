@@ -141,11 +141,24 @@ document.getElementById("checkoutBtn").addEventListener("click", function () {
     alert("กรุณาเลือกสินค้าที่ต้องการชำระเงิน");
     return;
   }
-  let names = checkedCart.map((item) => {
+  // เตรียมข้อมูลสินค้าสำหรับ checkout
+  let cartForCheckout = checkedCart.map((item) => {
     const prod = products.find((p) => p.id === item.id);
-    return prod ? prod.name : "";
+    return {
+      id: item.id,
+      name: prod ? prod.name : "",
+      price: prod ? prod.price : 0,
+      qty: item.qty,
+    };
   });
-  alert("ชำระเงินสำหรับ: \n" + names.join("\n"));
+  localStorage.setItem("cart_checkout", JSON.stringify(cartForCheckout));
+  // ลบออกจาก cart หลัก
+  cart = cart.filter((item) => !item.checked);
+  saveCart();
+  renderCart();
+  updateCartBadge();
+  // ไปหน้า checkout
+  window.location = "checkout.html";
 });
 
 // ไปหน้าต่างๆ (demo)

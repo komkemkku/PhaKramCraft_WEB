@@ -1,0 +1,75 @@
+:root {
+  --purple-dark: #543082;
+  --purple-medium: #7c59a2;
+  --purple-soft: #ede6f8;
+}
+.text-purple {
+  color: var(--purple-dark) !important;
+}
+.bg-purple-soft {
+  background: var(--purple-soft) !important;
+  color: var(--purple-dark) !important;
+}
+
+.btn-purple {
+  background: var(--purple-medium);
+  color: #fff;
+  border-radius: 1.2rem;
+  font-weight: 600;
+  font-size: 1.12rem;
+  border: none;
+  transition: background 0.15s;
+}
+.btn-purple:hover,
+.btn-purple:focus {
+  background: var(--purple-dark);
+  color: #fff;
+}
+.card {
+  border-radius: 1.3rem;
+  border: none;
+}
+input[type="file"].form-control {
+  padding-top: 6px;
+}
+.list-group-item.address-item.active,
+.list-group-item.address-item:active {
+  background: var(--purple-soft);
+  color: var(--purple-medium);
+  border-color: var(--purple-medium);
+  font-weight: 600;
+}
+@media (max-width: 575.98px) {
+  .card {
+    border-radius: 0.7rem;
+  }
+}
+
+.navbar-nav .nav-link {
+  font-weight: 500;
+  font-size: 1rem;
+  transition: color 0.2s;
+}
+.navbar-nav .nav-link:hover {
+  color: var(--purple-medium) !important;
+  text-decoration: underline;
+}
+.icon-btn {
+  color: var(--purple-dark);
+  font-size: 1.15rem;
+  padding: 4px 8px;
+  border-radius: 50%;
+  transition: background 0.2s, color 0.2s;
+}
+.icon-btn:hover {
+  background: var(--gray-soft);
+  color: var(--purple-medium);
+}
+.search-input {
+  min-width: 130px;
+  max-width: 180px;
+  border-radius: 30px;
+  border: 1px solid #e1dbe8;
+  background: #fff;
+  padding-left: 12px;
+}

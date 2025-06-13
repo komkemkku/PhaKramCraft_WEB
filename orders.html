@@ -189,6 +189,41 @@
             </div>
         </div>
     </div>
+
+    <!-- Modal ยืนยันการยกเลิก -->
+    <div class="modal fade" id="cancelOrderModal" tabindex="-1" aria-labelledby="cancelOrderModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title text-danger" id="cancelOrderModalLabel">
+                        <i class="bi bi-exclamation-circle me-2"></i> ยืนยันการยกเลิกคำสั่งซื้อ
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="ปิด"></button>
+                </div>
+                <div class="modal-body">
+                    ต้องการยกเลิกคำสั่งซื้อนี้ใช่หรือไม่?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ไม่ยกเลิก</button>
+                    <button type="button" class="btn btn-danger" id="confirmCancelOrderBtn">ยืนยันยกเลิก</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="position-fixed top-0 end-0 p-3" style="z-index: 2000">
+        <div id="orderCancelToast" class="toast align-items-center text-bg-light border-0 shadow" role="alert"
+            aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body text-danger fw-semibold">
+                    <i class="bi bi-x-circle-fill me-2"></i> ยกเลิกคำสั่งซื้อเรียบร้อยแล้ว
+                </div>
+                <button type="button" class="btn-close ms-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="/assets/js/orders.js"></script>
     <script src="/assets/js/notification.js"></script>

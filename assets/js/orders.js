@@ -89,21 +89,43 @@ function renderOrders(status = "pending") {
 }
 
 // ------- Actions ---------
+let orderIdToCancel = null;
+
 window.cancelOrder = function (id) {
-  if (confirm("คุณต้องการยกเลิกคำสั่งซื้อนี้ใช่หรือไม่?")) {
-    let orders = getOrders();
-    let order = orders.find((o) => o.id === id);
-    if (order && order.status === "pending") {
-      order.status = "cancelled";
-      saveOrders(orders);
-      renderOrders(currentTabStatus);
-    }
-  }
+  orderIdToCancel = id;
+  var modal = new bootstrap.Modal(document.getElementById("cancelOrderModal"));
+  modal.show();
 };
 
+// Event ปุ่มยืนยันใน modal
+document.addEventListener("DOMContentLoaded", function () {
+  document.getElementById("confirmCancelOrderBtn").onclick = function () {
+    if (orderIdToCancel) {
+      let orders = getOrders();
+      let order = orders.find((o) => o.id === orderIdToCancel);
+      if (order && order.status === "pending") {
+        order.status = "cancelled";
+        saveOrders(orders);
+        renderOrders(currentTabStatus);
+
+        // Toast แจ้งเตือน
+        var toastEl = document.getElementById("orderCancelToast");
+        if (toastEl) {
+          var toast = new bootstrap.Toast(toastEl);
+          toast.show();
+        }
+      }
+      orderIdToCancel = null;
+      var modalEl = document.getElementById("cancelOrderModal");
+      var modalInstance = bootstrap.Modal.getInstance(modalEl);
+      modalInstance.hide();
+    }
+  };
+});
+
 window.payOrder = function (id) {
-  alert("ไปหน้าชำระเงิน (Demo)");
-  // หรือเชื่อมต่อ API/หน้า payment จริง
+  // พาไปหน้าชำระเงินตาม order id
+  window.location = `payment.html?order=${id}`;
 };
 
 window.trackOrder = function (tracking) {
