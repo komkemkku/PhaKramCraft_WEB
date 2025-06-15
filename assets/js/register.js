@@ -1,65 +1,64 @@
-// ฟังก์ชันช่วยจำลองระบบเก็บ user
-function getUsers() {
-  // ดึง users (array) จาก localStorage
-  return JSON.parse(localStorage.getItem("users") || "[]");
-}
-function saveUser(user) {
-  let users = getUsers();
-  users.push(user);
-  localStorage.setItem("users", JSON.stringify(users));
-}
-function emailExists(email) {
-  let users = getUsers();
-  return users.some((u) => u.email.toLowerCase() === email.toLowerCase());
-}
-
-// กด "เข้าสู่ระบบ" กลับหน้า login
-document.getElementById("toLoginBtn").onclick = function () {
-  window.location = "login.html";
-};
-
 document
   .getElementById("registerForm")
-  .addEventListener("submit", function (e) {
+  .addEventListener("submit", async function (e) {
     e.preventDefault();
-    // ดึงค่าจากฟอร์ม
-    const firstName = document.getElementById("firstName").value.trim();
-    const lastName = document.getElementById("lastName").value.trim();
+
+    const firstname = document.getElementById("firstName").value.trim();
+    const lastname = document.getElementById("lastName").value.trim();
     const email = document.getElementById("email").value.trim();
+    const phone = document.getElementById("phone").value.trim();
     const username = document.getElementById("username").value.trim();
     const password = document.getElementById("password").value;
     const confirmPassword = document.getElementById("confirmPassword").value;
 
-    const errorEl = document.getElementById("registerError");
-    errorEl.classList.add("d-none");
-    errorEl.textContent = "";
+    const errorMsg = document.getElementById("registerError");
 
-    // ตรวจสอบรหัสผ่าน
+    // ตรวจสอบรหัสผ่านตรงกัน
     if (password !== confirmPassword) {
-      errorEl.textContent = "รหัสผ่านและยืนยันรหัสผ่านไม่ตรงกัน";
-      errorEl.classList.remove("d-none");
+      errorMsg.textContent = "รหัสผ่านไม่ตรงกัน";
+      errorMsg.classList.remove("d-none");
       return;
     }
-    // ตรวจสอบอีเมลซ้ำ
-    if (emailExists(email)) {
-      errorEl.textContent = "อีเมลนี้ถูกใช้ลงทะเบียนแล้ว";
-      errorEl.classList.remove("d-none");
-      return;
-    }
-    // บันทึก user ใหม่ (mock)
-    saveUser({
-      firstName,
-      lastName,
-      email,
-      username,
-      password,
-    });
 
-    // แจ้งเตือน Toast และ redirect ไป login
-    const toastEl = document.getElementById("registerToast");
-    const toast = new bootstrap.Toast(toastEl);
-    toast.show();
-    setTimeout(() => {
-      window.location = "login.html";
-    }, 1600);
+    try {
+      const response = await fetch("http://localhost:3000/users", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          firstname,
+          lastname,
+          email,
+          phone,
+          username,
+          password,
+        }),
+      });
+
+      if (response.ok) {
+        // Toast แจ้งเตือนความสำเร็จ (Bootstrap 5)
+        const toastEl = document.getElementById("registerToast");
+        const toast = new bootstrap.Toast(toastEl);
+        toast.show();
+
+        setTimeout(() => {
+          window.location = "login.html";
+        }, 1800); // 1.8 วิแล้วค่อยไปหน้า login
+      } else {
+        const errorData = await response.json();
+        errorMsg.textContent =
+          errorData.message || "เกิดข้อผิดพลาดในการสมัครสมาชิก";
+        errorMsg.classList.remove("d-none");
+      }
+    } catch (err) {
+      console.error("Register error:", err);
+      errorMsg.textContent = "เชื่อมต่อ server ไม่สำเร็จ";
+      errorMsg.classList.remove("d-none");
+    }
   });
+
+// ปุ่มเข้าสู่ระบบ
+document.getElementById("toLoginBtn").addEventListener("click", function () {
+  window.location = "login.html";
+});
