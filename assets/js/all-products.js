@@ -1,16 +1,163 @@
+// /assets/js/all-product.js
+
+const PRODUCT_API = "http://localhost:3000/products";
+const CATEGORY_API = "http://localhost:3000/categories";
+const WISHLIST_API = "http://localhost:3000/wishlists";
+const CART_API = "http://localhost:3000/carts";
+const PRODUCTS_PER_PAGE = 8;
+
 let products = [];
 let categories = [];
-let cart = JSON.parse(localStorage.getItem("cart") || "[]");
-let wishlist = JSON.parse(localStorage.getItem("wishlist") || "[]");
-const PRODUCTS_PER_PAGE = 8;
+let wishlist = [];
+let cart = null;
 let currentPage = 1;
 
-// โหลดหมวดหมู่จาก API
+// ===== JWT & Login =====
+function getToken() {
+  return localStorage.getItem("jwt_token") || "";
+}
+function checkLoginOrRedirect() {
+  const token = getToken();
+  if (!token) {
+    alert("กรุณาเข้าสู่ระบบก่อนใช้งานฟีเจอร์นี้");
+    window.location.href = "login.html";
+    return false;
+  }
+  return true;
+}
+
+// ===== WISHLIST SECTION =====
+async function fetchWishlist() {
+  if (!checkLoginOrRedirect()) return;
+  try {
+    const res = await fetch(WISHLIST_API, {
+      headers: { Authorization: "Bearer " + getToken() },
+    });
+    if (!res.ok) throw new Error("โหลดสินค้าที่ถูกใจล้มเหลว");
+    wishlist = await res.json();
+  } catch (e) {
+    wishlist = [];
+  }
+}
+function isInWishlist(pid) {
+  return wishlist.some((item) => item.product_id === pid);
+}
+async function toggleWishlist(pid) {
+  if (!checkLoginOrRedirect()) return;
+  if (!pid) {
+    alert("เกิดข้อผิดพลาด: ไม่พบรหัสสินค้า");
+    return;
+  }
+  const item = wishlist.find((w) => w.product_id === pid);
+  if (item) {
+    try {
+      const res = await fetch(`${WISHLIST_API}/${item.wishlist_id}`, {
+        method: "DELETE",
+        headers: { Authorization: "Bearer " + getToken() },
+      });
+      if (!res.ok) {
+        const err = await res.json();
+        alert(err.error || "ลบออกจากรายการโปรดล้มเหลว");
+        return;
+      }
+      await fetchWishlist();
+      await fetchCart();
+      renderProductsPaginated(currentPage);
+      updateCartBadge();
+    } catch (e) {
+      alert("เกิดข้อผิดพลาดในการลบรายการโปรด");
+    }
+  } else {
+    try {
+      const res = await fetch(WISHLIST_API, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + getToken(),
+        },
+        body: JSON.stringify({ product_id: pid }),
+      });
+      if (!res.ok) {
+        const err = await res.json();
+        alert(err.error || "เพิ่มรายการโปรดล้มเหลว");
+        return;
+      }
+      await fetchWishlist();
+      await fetchCart();
+      renderProductsPaginated(currentPage);
+      updateCartBadge();
+    } catch (e) {
+      alert("เกิดข้อผิดพลาดในการเพิ่มรายการโปรด");
+    }
+  }
+}
+
+// ===== CART SECTION =====
+async function fetchCart() {
+  if (!checkLoginOrRedirect()) return;
+  try {
+    const res = await fetch(CART_API, {
+      headers: { Authorization: "Bearer " + getToken() },
+    });
+    const data = await res.json();
+    cart = data.cart;
+  } catch (err) {
+    cart = null;
+  }
+}
+function findCartItemByProductId(pid) {
+  if (!cart || !cart.cartitems) return null;
+  return cart.cartitems.find((item) => item.product_id === pid);
+}
+async function addToCart(product_id, amount = 1) {
+  if (!checkLoginOrRedirect()) return;
+  try {
+    const res = await fetch(`${CART_API}/add`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + getToken(),
+      },
+      body: JSON.stringify({ product_id, amount }),
+    });
+    if (!res.ok) {
+      const err = await res.json();
+      alert(err.error || "เพิ่มสินค้าล้มเหลว");
+      return;
+    }
+    await fetchCart();
+    renderProductsPaginated(currentPage);
+    updateCartBadge();
+  } catch (err) {
+    alert("เกิดข้อผิดพลาดในการเพิ่มสินค้า");
+  }
+}
+async function removeCartItem(itemId) {
+  if (!checkLoginOrRedirect()) return;
+  try {
+    const res = await fetch(`${CART_API}/item/${itemId}`, {
+      method: "DELETE",
+      headers: { Authorization: "Bearer " + getToken() },
+    });
+    if (!res.ok) {
+      const err = await res.json();
+      alert(err.error || "ลบสินค้าล้มเหลว");
+      return;
+    }
+    await fetchCart();
+    renderProductsPaginated(currentPage);
+    updateCartBadge();
+  } catch (err) {
+    alert("เกิดข้อผิดพลาดในการลบสินค้า");
+  }
+}
+
+// ===== CATEGORY SECTION =====
 async function fetchCategories() {
   try {
-    const res = await fetch("http://localhost:3000/categories");
+    const res = await fetch(CATEGORY_API);
     if (!res.ok) throw new Error("โหลดประเภทสินค้าล้มเหลว");
-    categories = await res.json(); // [{ id, name }]
+    categories = await res.json();
     renderCategorySelect();
   } catch (err) {
     document.getElementById("categorySelect").innerHTML = `
@@ -19,8 +166,6 @@ async function fetchCategories() {
     `;
   }
 }
-
-// เติม option ประเภทสินค้าใน select
 function renderCategorySelect() {
   const select = document.getElementById("categorySelect");
   let html = `<option value="all">ประเภทสินค้าทั้งหมด</option>`;
@@ -30,9 +175,13 @@ function renderCategorySelect() {
   select.innerHTML = html;
 }
 
-// โหลดสินค้าทั้งหมด (กรองฝั่ง client)
+// ===== PRODUCTS SECTION =====
 async function fetchProducts() {
-  let url = "http://localhost:3000/products";
+  const category = document.getElementById("categorySelect").value;
+  let url = PRODUCT_API;
+  if (category !== "all") {
+    url += `?type=${encodeURIComponent(category)}`;
+  }
   try {
     const res = await fetch(url);
     if (!res.ok) throw new Error("โหลดสินค้าล้มเหลว");
@@ -46,7 +195,7 @@ async function fetchProducts() {
   }
 }
 
-// กรองประเภท + ค้นหา ฝั่ง client
+// ===== FILTER + PAGINATION =====
 function getFilteredProducts() {
   const searchVal = document
     .getElementById("searchInputProducts")
@@ -54,22 +203,23 @@ function getFilteredProducts() {
     .toLowerCase();
   const category = document.getElementById("categorySelect").value;
   let filtered = products;
-  // กรองประเภท (โดยใช้ category_name)
+
+  filtered = filtered.filter((p) => p.is_active !== false && p.is_active !== 0);
   if (category !== "all") {
-    filtered = filtered.filter((p) => p.category_name === category);
+    filtered = filtered.filter(
+      (p) => p.category_name === category || p.type === category
+    );
   }
-  // กรองค้นหา
   if (searchVal) {
     filtered = filtered.filter(
       (p) =>
         (p.name && p.name.toLowerCase().includes(searchVal)) ||
-        (p.description && p.description.toLowerCase().includes(searchVal))
+        (p.description && p.description.toLowerCase().includes(searchVal)) ||
+        (p.desc && p.desc.toLowerCase().includes(searchVal))
     );
   }
   return filtered;
 }
-
-// Render + Pagination
 function renderProductsPaginated(page = 1) {
   const filtered = getFilteredProducts();
   const totalPage = Math.ceil(filtered.length / PRODUCTS_PER_PAGE);
@@ -106,7 +256,7 @@ window.gotoPageNum = function (page) {
   renderProductsPaginated(page);
 };
 
-// แสดงสินค้าแต่ละชิ้น
+// ===== RENDER PRODUCTS =====
 function renderProducts(list) {
   const productList = document.getElementById("productList");
   productList.innerHTML = "";
@@ -115,19 +265,22 @@ function renderProducts(list) {
     return;
   }
   list.forEach((p) => {
-    const inCart = cart.includes(p.id);
-    const inWishlist = wishlist.includes(p.id);
+    const cartItem = findCartItemByProductId(p.id);
+    const inCart = !!cartItem;
+    const inWishlist = isInWishlist(p.id);
     productList.innerHTML += `
       <div class="col-12 col-sm-6 col-md-4 col-lg-3">
         <div class="product-card h-100">
-          <img src="${
-            p.img || "https://via.placeholder.com/400x300?text=No+Image"
-          }" alt="${p.name}" class="card-img-top mb-2">
+          <img src="${p.img || "/assets/img/placeholder.png"}" alt="${
+      p.name
+    }" class="card-img-top mb-2">
           <div class="product-name fw-semibold mb-1">${p.name}</div>
           <div class="text-purple fw-bold fs-5 mb-1">฿${Number(
             p.price
           ).toLocaleString()}</div>
-          <div class="small text-secondary mb-1">${p.category_name || ""}</div>
+          <div class="small text-secondary mb-1">${
+            p.category_name || p.type || ""
+          }</div>
           <div class="mb-2 small" style="min-height:40px">${
             p.description || ""
           }</div>
@@ -139,7 +292,10 @@ function renderProducts(list) {
             </button>
             <button class="btn btn-action cart ${
               inCart ? "active" : ""
-            }" title="เพิ่มตะกร้า" onclick="toggleCart(${p.id})">
+            }" title="${inCart ? "นำออกจากตะกร้า" : "เพิ่มตะกร้า"}"
+              onclick="${
+                inCart ? `removeCartItem(${cartItem.id})` : `addToCart(${p.id})`
+              }">
               <i class="bi bi-cart${inCart ? "-fill" : ""}"></i>
               ${inCart ? "นำออก" : "เพิ่มตะกร้า"}
             </button>
@@ -154,50 +310,24 @@ function renderProducts(list) {
   updateCartBadge();
 }
 
-// กดใจ
-function toggleWishlist(pid) {
-  if (wishlist.includes(pid)) {
-    wishlist = wishlist.filter((id) => id !== pid);
-  } else {
-    wishlist.push(pid);
-  }
-  localStorage.setItem("wishlist", JSON.stringify(wishlist));
-  renderProductsPaginated(currentPage);
-}
-
-// เพิ่มตะกร้า
-function toggleCart(pid) {
-  if (cart.includes(pid)) {
-    cart = cart.filter((id) => id !== pid);
-  } else {
-    cart.push(pid);
-  }
-  localStorage.setItem("cart", JSON.stringify(cart));
-  renderProductsPaginated(currentPage);
-}
-
-// Badge ตะกร้า
+// ===== Badge ตะกร้า =====
 function updateCartBadge() {
-  let cart = JSON.parse(localStorage.getItem("cart")) || [];
   let total = 0;
-  if (cart.length > 0) {
-    if (typeof cart[0] === "object") {
-      total = cart.reduce((sum, item) => sum + (item.qty || 1), 0);
-    } else {
-      total = cart.length;
-    }
+  if (cart && cart.cartitems) {
+    total = cart.cartitems.reduce((sum, item) => sum + (item.amount || 0), 0);
   }
   const badge = document.getElementById("cartCount");
   if (badge) {
     badge.textContent = total > 0 ? total : "";
   }
 }
-updateCartBadge();
 
-// Modal รายละเอียดสินค้า
+// ===== Modal รายละเอียดสินค้า =====
 function viewDetail(pid) {
   const p = products.find((pr) => pr.id === pid);
   if (!p) return;
+  const cartItem = findCartItemByProductId(p.id);
+  const inCart = !!cartItem;
   const modalId = "productModal";
   if (document.getElementById(modalId))
     document.getElementById(modalId).remove();
@@ -206,9 +336,7 @@ function viewDetail(pid) {
     <div class="modal fade" id="${modalId}" tabindex="-1" aria-labelledby="modalLabel">
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-          <img src="${
-            p.img || "https://via.placeholder.com/400x300?text=No+Image"
-          }"
+          <img src="${p.img || "/assets/img/placeholder.png"}"
                class="w-100 rounded-top" style="object-fit:cover;max-height:240px;" alt="${
                  p.name
                }">
@@ -227,28 +355,20 @@ function viewDetail(pid) {
           </div>
           <div class="modal-footer">
             <button class="btn btn-action heart ${
-              wishlist.includes(pid) ? "active" : ""
+              isInWishlist(pid) ? "active" : ""
             }"
               onclick="toggleWishlist(${
                 p.id
               });bootstrap.Modal.getInstance(document.getElementById('${modalId}')).hide()">
-              <i class="bi bi-heart${
-                wishlist.includes(pid) ? "-fill" : ""
-              }"></i>
-              ${
-                wishlist.includes(pid)
-                  ? "นำออกจากรายการโปรด"
-                  : "เพิ่มรายการโปรด"
-              }
+              <i class="bi bi-heart${isInWishlist(pid) ? "-fill" : ""}"></i>
+              ${isInWishlist(pid) ? "นำออกจากรายการโปรด" : "เพิ่มรายการโปรด"}
             </button>
-            <button class="btn btn-action cart ${
-              cart.includes(pid) ? "active" : ""
-            }"
-              onclick="toggleCart(${
-                p.id
-              });bootstrap.Modal.getInstance(document.getElementById('${modalId}')).hide()">
-              <i class="bi bi-cart${cart.includes(pid) ? "-fill" : ""}"></i>
-              ${cart.includes(pid) ? "นำออกจากตะกร้า" : "เพิ่มตะกร้า"}
+            <button class="btn btn-action cart ${inCart ? "active" : ""}"
+              onclick="${
+                inCart ? `removeCartItem(${cartItem.id})` : `addToCart(${p.id})`
+              };bootstrap.Modal.getInstance(document.getElementById('${modalId}')).hide()">
+              <i class="bi bi-cart${inCart ? "-fill" : ""}"></i>
+              ${inCart ? "นำออกจากตะกร้า" : "เพิ่มตะกร้า"}
             </button>
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>
           </div>
@@ -267,16 +387,25 @@ function viewDetail(pid) {
     });
 }
 
-// Event listeners (เปลี่ยนหมวด/ค้นหา)
+// ===== EVENTS & INIT =====
 document
   .getElementById("categorySelect")
-  .addEventListener("change", () => renderProductsPaginated(1));
+  .addEventListener("change", async () => {
+    await fetchProducts();
+    await fetchWishlist();
+    await fetchCart();
+    renderProductsPaginated(1);
+  });
 document
   .getElementById("searchInputProducts")
   .addEventListener("input", () => renderProductsPaginated(1));
 
-// โหลดข้อมูลเริ่มต้น
-window.addEventListener("DOMContentLoaded", () => {
-  fetchCategories().then(() => fetchProducts());
+window.addEventListener("DOMContentLoaded", async () => {
+  if (!checkLoginOrRedirect()) return;
+  await fetchCategories();
+  await fetchProducts();
+  await fetchWishlist();
+  await fetchCart();
+  renderProductsPaginated(1);
   updateCartBadge();
 });
