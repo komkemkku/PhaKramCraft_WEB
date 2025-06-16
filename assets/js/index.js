@@ -1,84 +1,59 @@
-// สินค้าตัวอย่าง (เพิ่มหมวดหมู่ type)
-const products = [
-  {
-    id: 1,
-    name: "ผ้าครามลายดั้งเดิม",
-    img: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=400&q=80",
-    price: 950,
-    desc: "ผ้าครามทอมือ ลายดั้งเดิม จากกลุ่มชุมชน",
-    type: "ผ้าพันคอ",
-  },
-  {
-    id: 2,
-    name: "ผ้าครามสีน้ำเงินเข้ม",
-    img: "https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&w=400&q=80",
-    price: 890,
-    desc: "ผ้าครามย้อมครามแท้ สีเข้มสวยงาม",
-    type: "ผ้าซิ่น",
-  },
-  {
-    id: 3,
-    name: "ผ้าครามผสมลายสวย",
-    img: "https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&w=400&q=80",
-    price: 1090,
-    desc: "ผ้าครามทอมือ ผสมผสานลวดลายสมัยใหม่",
-    type: "ผ้าคลุมไหล่",
-  },
-  {
-    id: 4,
-    name: "ผ้าครามครามแท้พิเศษ",
-    img: "https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&w=400&q=80",
-    price: 1190,
-    desc: "เนื้อผ้านุ่ม ใส่สบาย ลายครามแท้",
-    type: "เสื้อ",
-  },
-  {
-    id: 5,
-    name: "ผ้าครามสีน้ำเงินเข้ม",
-    img: "https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&w=400&q=80",
-    price: 890,
-    desc: "ผ้าครามย้อมครามแท้ สีเข้มสวยงาม",
-    type: "ผ้าซิ่น",
-  },
-  ,
-  {
-    id: 6,
-    name: "ผ้าครามสีน้ำเงินเข้ม",
-    img: "https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&w=400&q=80",
-    price: 890,
-    desc: "ผ้าครามย้อมครามแท้ สีเข้มสวยงาม",
-    type: "ผ้าซิ่น",
-  },
-  ,
-  {
-    id: 7,
-    name: "ผ้าครามสีน้ำเงินเข้ม",
-    img: "https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&w=400&q=80",
-    price: 890,
-    desc: "ผ้าครามย้อมครามแท้ สีเข้มสวยงาม",
-    type: "ผ้าซิ่น",
-  },
-  ,
-  {
-    id: 8,
-    name: "ผ้าครามสีน้ำเงินเข้ม",
-    img: "https://images.unsplash.com/photo-1512436991641-6745cdb1723f?auto=format&fit=crop&w=400&q=80",
-    price: 890,
-    desc: "ผ้าครามย้อมครามแท้ สีเข้มสวยงาม",
-    type: "ผ้าซิ่น",
-  },
-];
-
-// อ่านข้อมูลจาก LocalStorage
+let products = [];
+let categories = [];
 let cart = JSON.parse(localStorage.getItem("cart") || "[]");
 let wishlist = JSON.parse(localStorage.getItem("wishlist") || "[]");
-let currentFilter = "all";
 
-// แสดงสินค้า
+// โหลดประเภทสินค้าจาก API
+async function fetchCategories() {
+  try {
+    const res = await fetch("http://localhost:3000/categories");
+    if (!res.ok) throw new Error("โหลดประเภทสินค้าล้มเหลว");
+    categories = await res.json(); // [{ id, name }, ...]
+    renderCategorySelect();
+  } catch (err) {
+    // ถ้าโหลดไม่สำเร็จจะใส่ default option ไว้
+    document.getElementById("categorySelect").innerHTML = `
+      <option value="all">ประเภทสินค้าทั้งหมด</option>
+      <option disabled>โหลดหมวดหมู่ไม่สำเร็จ</option>
+    `;
+  }
+}
+
+// เติม option ประเภทสินค้าใน select
+function renderCategorySelect() {
+  const select = document.getElementById("categorySelect");
+  let html = `<option value="all">ประเภทสินค้าทั้งหมด</option>`;
+  categories.forEach((cat) => {
+    html += `<option value="${cat.name}">${cat.name}</option>`;
+  });
+  select.innerHTML = html;
+}
+
+// โหลดสินค้าตามประเภทที่เลือก
+async function fetchProducts() {
+  const category = document.getElementById("categorySelect").value;
+  let url = "http://localhost:3000/products";
+  if (category !== "all") {
+    url += `?type=${encodeURIComponent(category)}`;
+  }
+
+  try {
+    const res = await fetch(url);
+    if (!res.ok) throw new Error("โหลดสินค้าล้มเหลว");
+    products = await res.json();
+    applyFilters(); // กรองด้วย search อีกรอบ (ถ้ามี)
+  } catch (err) {
+    document.getElementById("productList").innerHTML =
+      '<div class="col-12 text-center text-danger py-5">ไม่สามารถโหลดสินค้าจากเซิร์ฟเวอร์ได้</div>';
+    products = [];
+  }
+}
+
+// render สินค้า
 function renderProducts(list = products) {
   const productList = document.getElementById("productList");
   productList.innerHTML = "";
-  if (list.length === 0) {
+  if (!list.length) {
     productList.innerHTML = `<div class="col-12 text-center text-secondary py-5">ไม่พบสินค้า</div>`;
     return;
   }
@@ -89,10 +64,14 @@ function renderProducts(list = products) {
       <div class="col-12 col-sm-6 col-md-4 col-lg-3">
         <div class="product-card h-100">
           <img src="${p.img}" alt="${p.name}" class="card-img-top mb-2">
-          <div class="product-name">${p.name}</div>
-          <div class="product-price">฿${p.price.toLocaleString()}</div>
-          <div class="small text-secondary mb-2">${p.type}</div>
-          <div class="mb-2" style="min-height:40px">${p.desc}</div>
+          <div class="product-name fw-semibold mb-1">${p.name}</div>
+          <div class="text-purple fw-bold fs-5 mb-1">฿${
+            p.price?.toLocaleString?.() ?? p.price
+          }</div>
+          <div class="small text-secondary mb-1">${p.type || ""}</div>
+          <div class="mb-2 small" style="min-height:40px">${
+            p.description || ""
+          }</div>
           <div class="mt-auto d-flex align-items-center gap-1">
             <button class="btn btn-action heart ${
               inWishlist ? "active" : ""
@@ -116,7 +95,7 @@ function renderProducts(list = products) {
   updateCartBadge();
 }
 
-// กดใจ
+// Wishlist/cart
 function toggleWishlist(pid) {
   if (wishlist.includes(pid)) {
     wishlist = wishlist.filter((id) => id !== pid);
@@ -126,8 +105,6 @@ function toggleWishlist(pid) {
   localStorage.setItem("wishlist", JSON.stringify(wishlist));
   applyFilters();
 }
-
-// เพิ่มตะกร้า
 function toggleCart(pid) {
   if (cart.includes(pid)) {
     cart = cart.filter((id) => id !== pid);
@@ -138,26 +115,15 @@ function toggleCart(pid) {
   applyFilters();
 }
 
-// Badge ตะกร้า
+// Badge cart
 function updateCartBadge() {
   let cart = JSON.parse(localStorage.getItem("cart")) || [];
-  // ถ้า cart เป็น array ของ object {id, qty, ...}
-  let total = 0;
-  if (cart.length > 0) {
-    if (typeof cart[0] === "object") {
-      total = cart.reduce((sum, item) => sum + (item.qty || 1), 0);
-    } else {
-      // ถ้าเป็น array ของ id เฉยๆ
-      total = cart.length;
-    }
-  }
+  let total = Array.isArray(cart) ? cart.length : 0;
   const badge = document.getElementById("cartCount");
   if (badge) {
     badge.textContent = total > 0 ? total : "";
   }
 }
-// เรียกเมื่อโหลดหน้าและหลัง update ตะกร้า
-updateCartBadge();
 
 // Modal รายละเอียดสินค้า
 function viewDetail(pid) {
@@ -166,6 +132,10 @@ function viewDetail(pid) {
   const modalId = "productModal";
   if (document.getElementById(modalId))
     document.getElementById(modalId).remove();
+
+  // ดึงชื่อหมวดหมู่
+  const categoryName = getCategoryName(p.category_id);
+
   const html = `
     <div class="modal fade" id="${modalId}" tabindex="-1" aria-labelledby="modalLabel">
       <div class="modal-dialog modal-dialog-centered">
@@ -180,8 +150,8 @@ function viewDetail(pid) {
             <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
           </div>
           <div class="modal-body">
-            <p>${p.desc}</p>
-            <div class="small text-secondary mb-2">${p.type}</div>
+            <p>${p.description}</p>
+            <div class="small text-secondary mb-2">${categoryName}</div>
             <div class="fs-5 fw-semibold text-purple">ราคา ฿${p.price.toLocaleString()}</div>
           </div>
           <div class="modal-footer">
@@ -222,36 +192,41 @@ function viewDetail(pid) {
     });
 }
 
-// demo ไปหน้าอื่นๆ
-function gotoPage(page) {
-  alert("ตัวอย่าง: ไปยังหน้า " + page);
+// helper function สำหรับแปลง id เป็นชื่อ
+function getCategoryName(category_id) {
+  const cat = categories.find((c) => c.id === category_id);
+  return cat ? cat.name : "";
 }
 
-// ค้นหาและ filter
+// ฟิลเตอร์ และค้นหา
 function applyFilters() {
   const searchVal = document
     .getElementById("searchInput")
     .value.trim()
     .toLowerCase();
-  const category = document.getElementById("categorySelect").value;
   let filtered = products;
-  if (category !== "all") {
-    filtered = filtered.filter((p) => p.type === category);
-  }
+
+  // Search โดยไม่ต้อง reload สินค้าจาก API
   if (searchVal) {
     filtered = filtered.filter(
       (p) =>
-        p.name.toLowerCase().includes(searchVal) ||
-        p.desc.toLowerCase().includes(searchVal)
+        (p.name && p.name.toLowerCase().includes(searchVal)) ||
+        (p.desc && p.desc.toLowerCase().includes(searchVal))
     );
   }
   renderProducts(filtered);
 }
 
-document.getElementById("searchInput").addEventListener("input", applyFilters);
+// Event listener
 document
   .getElementById("categorySelect")
-  .addEventListener("change", applyFilters);
+  .addEventListener("change", fetchProducts);
+document.getElementById("searchInput").addEventListener("input", applyFilters);
 
-// โหลดสินค้าเริ่มต้น
-renderProducts();
+// โหลดทุกอย่างเมื่อเข้าเว็บครั้งแรก
+window.addEventListener("DOMContentLoaded", () => {
+  fetchCategories().then(() => {
+    fetchProducts();
+  });
+  updateCartBadge();
+});
