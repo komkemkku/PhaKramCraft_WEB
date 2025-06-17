@@ -104,19 +104,12 @@
                             <h3 class="fw-bold text-purple mb-4"><i
                                     class="bi bi-clipboard-check me-2"></i>จัดการคำสั่งซื้อ</h3>
                             <!-- Tabs for order status -->
-                            <ul class="nav nav-tabs mb-3" id="orderTabs">
-                                <li class="nav-item"><button class="nav-link active" data-status="pending"
-                                        type="button">รอชำระเงิน</button></li>
-                                <li class="nav-item"><button class="nav-link" data-status="paid"
-                                        type="button">ชำระเงินแล้ว</button></li>
-                                <li class="nav-item"><button class="nav-link" data-status="shipping"
-                                        type="button">กำลังจัดส่ง</button></li>
-                                <li class="nav-item"><button class="nav-link" data-status="delivered"
-                                        type="button">จัดส่งสำเร็จ</button></li>
-                                <li class="nav-item"><button class="nav-link" data-status="cancelled"
-                                        type="button">ยกเลิก</button></li>
-                                <li class="nav-item"><button class="nav-link" data-status="history"
-                                        type="button">ประวัติการสั่งซื้อ</button></li>
+                            <ul id="orderTabs" class="nav nav-tabs">
+                                <li><a class="nav-link active" data-status="pending">รอชำระเงิน</a></li>
+                                <li><a class="nav-link" data-status="paid">ชำระเงินแล้ว</a></li>
+                                <li><a class="nav-link" data-status="shipping">รอจัดส่ง</a></li>
+                                <li><a class="nav-link" data-status="delivered">จัดส่งแล้ว</a></li>
+                                <li><a class="nav-link" data-status="cancelled">ยกเลิก</a></li>
                             </ul>
                             <div id="orderList"></div>
                             <div id="orderEmpty" class="text-center text-secondary py-5 d-none">

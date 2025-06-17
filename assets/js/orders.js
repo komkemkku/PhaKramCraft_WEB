@@ -1,8 +1,8 @@
 const ORDER_API = "http://localhost:3000/orderUsers";
-const PROFILE_API = "http://localhost:3000/users/me/info"; 
-let currentTabStatus = "pending";
+const PROFILE_API = "http://localhost:3000/users/me/info";
+let currentTabStatus = "pending"; // อังกฤษเท่านั้น
 
-// ----- Toast helper -----
+// Toast helper
 function showToastSuccess() {
   var toastEl = document.getElementById("orderCancelToast");
   if (toastEl) {
@@ -18,7 +18,7 @@ function showToastFail() {
   }
 }
 
-// ----- ดึงข้อมูลผู้ใช้ -----
+// ดึงข้อมูลผู้ใช้
 async function fetchProfile() {
   const token = localStorage.getItem("jwt_token");
   if (!token) return null;
@@ -44,7 +44,7 @@ async function renderProfile() {
   }
 }
 
-// ----- ดึง order จาก API ตามสถานะ -----
+// ดึง order จาก API ตาม status (ภาษาอังกฤษ)
 async function fetchOrders(status) {
   const token = localStorage.getItem("jwt_token");
   let url = ORDER_API;
@@ -69,7 +69,20 @@ function renderAddress(address) {
   return html;
 }
 
-// ----- แสดง order ตามสถานะ -----
+// Mapping สถานะอังกฤษ > ไทย สำหรับแสดง (UI)
+function mapStatusToThai(status) {
+  return (
+    {
+      pending: "รอชำระเงิน",
+      paid: "ชำระเงินแล้ว",
+      shipping: "รอจัดส่ง",
+      delivered: "จัดส่งแล้ว",
+      cancelled: "ยกเลิก",
+    }[status] || status
+  );
+}
+
+// แสดง order ตาม status (ใช้ status อังกฤษ)
 async function renderOrders(status = "pending") {
   const orders = await fetchOrders(status);
   const listEl = document.getElementById("orderList");
@@ -81,14 +94,7 @@ async function renderOrders(status = "pending") {
   }
   emptyEl.classList.add("d-none");
   orders.forEach((order) => {
-    let statusText =
-      {
-        pending: "รอชำระเงิน",
-        paid: "ชำระเงินแล้ว",
-        shipping: "รอจัดส่ง",
-        delivered: "จัดส่งแล้ว",
-        cancelled: "ยกเลิก",
-      }[order.status] || order.status;
+    let statusText = mapStatusToThai(order.status);
     let badgeClass = `status-${order.status}`;
     listEl.innerHTML += `
       <div class="order-card p-3 mb-3">
@@ -178,6 +184,7 @@ document.querySelectorAll("#orderTabs .nav-link").forEach((tab) => {
       .querySelectorAll("#orderTabs .nav-link")
       .forEach((t) => t.classList.remove("active"));
     this.classList.add("active");
+    // ใช้ data-status ภาษาอังกฤษ เช่น pending, paid, shipping, delivered, cancelled
     currentTabStatus = this.getAttribute("data-status") || "";
     renderOrders(currentTabStatus);
   };
@@ -186,5 +193,5 @@ document.querySelectorAll("#orderTabs .nav-link").forEach((tab) => {
 // ----- On load -----
 document.addEventListener("DOMContentLoaded", () => {
   renderProfile(); // โหลด email ผู้ใช้
-  renderOrders(currentTabStatus); // โหลดออเดอร์
+  renderOrders(currentTabStatus); // โหลดออเดอร์ (สถานะเป็นอังกฤษ)
 });
