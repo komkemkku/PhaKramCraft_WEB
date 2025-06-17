@@ -1,115 +1,109 @@
-// โหลด user จำลอง (mock) จาก localStorage
-function getProfile() {
-  // ตัวอย่าง: สมมุติ login แล้วมี user ใน localStorage ('profile')
-  return JSON.parse(
-    localStorage.getItem("profile") ||
-      '{"firstName":"","lastName":"","email":"","phone":""}'
-  );
-}
-function saveProfile(user) {
-  localStorage.setItem("profile", JSON.stringify(user));
+const API_BASE = "http://localhost:3000";
+const TOKEN = localStorage.getItem("jwt_token");
+
+// ดึงข้อมูล user + id
+async function fetchUserProfile() {
+  const res = await fetch(`${API_BASE}/users/me/info`, {
+    headers: { Authorization: "Bearer " + TOKEN },
+  });
+  if (!res.ok) throw new Error("โหลดข้อมูลโปรไฟล์ล้มเหลว");
+  const data = await res.json();
+  return data.user; // หรือ data.user.id เอาไว้ PATCH
 }
 
-document.addEventListener("DOMContentLoaded", function () {
-  const user = getProfile();
-  // เติมค่าในฟอร์ม
-  document.getElementById("firstName").value = user.firstName || "";
-  document.getElementById("lastName").value = user.lastName || "";
-  document.getElementById("email").value = user.email || "";
-  document.getElementById("phone").value = user.phone || "";
-  document.getElementById("profileEmail").textContent = user.email || "";
+// อัปเดตโปรไฟล์ (ใช้ PATCH /users/:id)let user = null; // ต้องเก็บ user object ทั้งหมดไว้
 
-  // บันทึกฟอร์ม
-  document
-    .getElementById("profileForm")
-    .addEventListener("submit", function (e) {
-      e.preventDefault();
-      const updatedUser = {
-        firstName: document.getElementById("firstName").value.trim(),
-        lastName: document.getElementById("lastName").value.trim(),
-        email: document.getElementById("email").value.trim(),
-        phone: document.getElementById("phone").value.trim(),
-      };
-      saveProfile(updatedUser);
-      document.getElementById("saveSuccess").classList.remove("d-none");
-      setTimeout(() => {
-        document.getElementById("saveSuccess").classList.add("d-none");
-      }, 1400);
+// โหลดข้อมูล user
+document.addEventListener("DOMContentLoaded", async function () {
+  try {
+    const res = await fetch("http://localhost:3000/users/me/info", {
+      headers: { Authorization: "Bearer " + localStorage.getItem("jwt_token") },
     });
+    const data = await res.json();
+    user = data.user; // <<== เก็บไว้ทั้ง object
+
+    document.getElementById("firstName").value = user.firstname || "";
+    document.getElementById("lastName").value = user.lastname || "";
+    document.getElementById("email").value = user.email || "";
+    document.getElementById("phone").value = user.phone || "";
+    document.getElementById("profileEmail").textContent = user.email || "";
+  } catch (e) {
+    document.getElementById("profileError").textContent = "โหลดข้อมูลผิดพลาด";
+    document.getElementById("profileError").classList.remove("d-none");
+  }
 });
 
-// ฟังก์ชัน user mock (แบบ localStorage demo)
-function getProfile() {
-  return JSON.parse(
-    localStorage.getItem("profile") ||
-      '{"firstName":"","lastName":"","email":"","phone":"","password":"123456"}'
-  );
-}
-function saveProfile(user) {
-  localStorage.setItem("profile", JSON.stringify(user));
-}
+// บันทึกการแก้ไข
+document
+  .getElementById("profileForm")
+  .addEventListener("submit", async function (e) {
+    e.preventDefault();
+    const errorEl = document.getElementById("profileError");
+    errorEl.classList.add("d-none");
+    errorEl.textContent = "";
 
-document.addEventListener("DOMContentLoaded", function () {
-  const user = getProfile();
-  document.getElementById("firstName").value = user.firstName || "";
-  document.getElementById("lastName").value = user.lastName || "";
-  document.getElementById("email").value = user.email || "";
-  document.getElementById("phone").value = user.phone || "";
-  document.getElementById("profileEmail").textContent = user.email || "";
+    // รวบรวมข้อมูลใหม่
+    const updatedUser = {
+      firstname: document.getElementById("firstName").value.trim(),
+      lastname: document.getElementById("lastName").value.trim(),
+      email: document.getElementById("email").value.trim(),
+      phone: document.getElementById("phone").value.trim(),
+      username: user.username, // <<== ส่ง username เดิมไปด้วย!
+    };
 
-  document
-    .getElementById("profileForm")
-    .addEventListener("submit", function (e) {
-      e.preventDefault();
-      const errorEl = document.getElementById("profileError");
-      errorEl.classList.add("d-none");
-      errorEl.textContent = "";
+    // ต้องกรอกรหัสผ่านปัจจุบันเสมอ (ตามที่คุณบังคับ)
+    const currentPassword = document.getElementById("currentPassword").value;
+    if (!currentPassword) {
+      errorEl.textContent = "กรุณากรอกรหัสผ่านปัจจุบัน";
+      errorEl.classList.remove("d-none");
+      return;
+    }
 
-      const updatedUser = {
-        firstName: document.getElementById("firstName").value.trim(),
-        lastName: document.getElementById("lastName").value.trim(),
-        email: document.getElementById("email").value.trim(),
-        phone: document.getElementById("phone").value.trim(),
-        password: user.password, // default คือ password เดิม
-      };
-
-      // ตรวจสอบรหัสผ่านปัจจุบัน
-      const currentPassword = document.getElementById("currentPassword").value;
-      if (!currentPassword || currentPassword !== user.password) {
-        errorEl.textContent =
-          "กรุณากรอกรหัสผ่านปัจจุบันให้ถูกต้องเพื่อยืนยันการเปลี่ยนแปลง";
+    // ถ้าต้องการเปลี่ยนรหัสผ่าน
+    const newPassword = document.getElementById("newPassword").value;
+    const confirmNewPassword =
+      document.getElementById("confirmNewPassword").value;
+    if (newPassword || confirmNewPassword) {
+      if (newPassword.length < 6) {
+        errorEl.textContent = "รหัสผ่านใหม่ต้องมีอย่างน้อย 6 ตัวอักษร";
         errorEl.classList.remove("d-none");
         return;
       }
-
-      // ตรวจสอบการเปลี่ยนรหัสผ่านใหม่ (optional)
-      const newPassword = document.getElementById("newPassword").value;
-      const confirmNewPassword =
-        document.getElementById("confirmNewPassword").value;
-
-      if (newPassword || confirmNewPassword) {
-        if (newPassword.length < 6) {
-          errorEl.textContent = "รหัสผ่านใหม่ต้องมีอย่างน้อย 6 ตัวอักษร";
-          errorEl.classList.remove("d-none");
-          return;
-        }
-        if (newPassword !== confirmNewPassword) {
-          errorEl.textContent = "รหัสผ่านใหม่และยืนยันรหัสผ่านใหม่ไม่ตรงกัน";
-          errorEl.classList.remove("d-none");
-          return;
-        }
-        updatedUser.password = newPassword;
+      if (newPassword !== confirmNewPassword) {
+        errorEl.textContent = "รหัสผ่านใหม่และยืนยันรหัสผ่านใหม่ไม่ตรงกัน";
+        errorEl.classList.remove("d-none");
+        return;
       }
+      updatedUser.password = newPassword;
+    } else {
+      updatedUser.password = currentPassword; // ไม่เปลี่ยนรหัสผ่านแต่ต้องส่ง (หลังบ้านคุณบังคับไว้)
+    }
 
-      saveProfile(updatedUser);
+    // ส่งไป PATCH
+    try {
+      const res = await fetch(`http://localhost:3000/users/${user.id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + localStorage.getItem("jwt_token"),
+        },
+        body: JSON.stringify(updatedUser),
+      });
+      const data = await res.json();
+
+      if (!res.ok) throw new Error(data.error || "บันทึกไม่สำเร็จ");
+
       document.getElementById("saveSuccess").classList.remove("d-none");
       setTimeout(() => {
         document.getElementById("saveSuccess").classList.add("d-none");
       }, 1400);
 
-      // เคลียร์ฟิลด์รหัสผ่าน
+      // clear fields
       document.getElementById("currentPassword").value = "";
       document.getElementById("newPassword").value = "";
       document.getElementById("confirmNewPassword").value = "";
-    });
-});
+    } catch (err) {
+      errorEl.textContent = err.message;
+      errorEl.classList.remove("d-none");
+    }
+  });

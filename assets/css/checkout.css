@@ -73,3 +73,11 @@ input[type="file"].form-control {
   background: #fff;
   padding-left: 12px;
 }
+
+.address-item.active,
+.address-item:active,
+.address-item:focus {
+  border: 2px solid #8459d8 !important; /* สีม่วง */
+  background: #f5f1fc !important; /* สีพื้นหลัง */
+  box-shadow: 0 0 0 2px #ece2fd;
+}

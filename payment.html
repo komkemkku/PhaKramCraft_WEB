@@ -80,33 +80,29 @@
                             <h3 class="fw-bold text-purple mb-4">
                                 <i class="bi bi-credit-card me-2"></i> ชำระเงิน
                             </h3>
-                            <div class="row g-3">
-                                <!-- QR Code -->
-                                <div class="col-md-5 text-center">
-                                    <div class="mb-2 fw-semibold text-purple">สแกนชำระเงิน</div>
-                                    <img src="/assets/images/qrcode-demo.png" class="img-fluid rounded shadow-sm border"
-                                        alt="QR code" style="max-width:210px;">
-                                </div>
-                                <!-- Bank Detail -->
-                                <div class="col-md-7">
-                                    <div class="mb-2 fw-semibold text-purple">หรือโอนผ่านบัญชีธนาคาร</div>
-                                    <div class="mb-2"><span class="fw-bold">ชื่อบัญชี:</span> สมชาย ใจดี</div>
-                                    <div class="mb-2"><span class="fw-bold">ธนาคาร:</span> กสิกรไทย (KBank)</div>
-                                    <div class="mb-2"><span class="fw-bold">เลขบัญชี:</span> 123-4-56789-0</div>
-                                    <div class="mb-2"><span class="fw-bold">สาขา:</span> สยามสแควร์</div>
-                                </div>
+                            <div class="mb-4">
+                                <div class="fw-semibold text-purple mb-2">ช่องทางการชำระเงิน</div>
+                                <div id="paymentChannelList"></div>
                             </div>
                             <hr class="my-4">
                             <!-- Order Summary -->
                             <div class="mb-3">
                                 <div class="fw-semibold text-purple mb-2">รายละเอียดที่ต้องชำระ</div>
                                 <div class="d-flex justify-content-between mb-1">
-                                    <span>ราคาสินค้า</span>
+                                    <span>สินค้า</span>
+                                    <span id="productList">-</span>
+                                </div>
+                                <div class="d-flex justify-content-between mb-1">
+                                    <span>ที่อยู่จัดส่ง</span>
+                                    <span id="addressBlock">-</span>
+                                </div>
+                                <div class="d-flex justify-content-between mb-1">
+                                    <span>ราคารวมสินค้า</span>
                                     <span id="productAmount">0 บาท</span>
                                 </div>
                                 <div class="d-flex justify-content-between mb-1">
                                     <span>ค่าจัดส่ง</span>
-                                    <span>50 บาท</span>
+                                    <span id="shippingAmount">50 บาท</span>
                                 </div>
                                 <div class="d-flex justify-content-between fs-5 mt-2 fw-bold text-purple">
                                     <span>ยอดชำระเงินทั้งหมด</span>

@@ -162,27 +162,20 @@
         </div>
     </footer>
 
+    <!-- Toast แจ้งเตือน -->
     <div class="position-fixed top-0 end-0 p-3" style="z-index: 1080">
         <div id="notificationToast" class="toast align-items-center text-bg-light border-0 shadow-lg" role="alert"
             aria-live="assertive" aria-atomic="true">
             <div class="toast-header bg-purple-soft text-purple-dark">
                 <i class="bi bi-bell-fill me-2"></i>
                 <strong class="me-auto">การแจ้งเตือน</strong>
-                <small class="text-muted">ขณะนี้</small>
+                <small class="text-muted">ล่าสุด</small>
                 <button type="button" class="btn-close ms-2" data-bs-dismiss="toast" aria-label="Close"></button>
             </div>
             <div class="toast-body p-3">
-                <ul class="notification-list mb-0 ps-3">
-                    <li>
-                        <span class="fw-semibold text-purple">รอชำระเงิน:</span>
-                        <span>คำสั่งซื้อ #00123</span>
-                        <a href="#" class="ms-2 text-decoration-underline small">ชำระเงิน</a>
-                    </li>
-                    <li class="mt-2">
-                        <span class="fw-semibold text-success">จัดส่งแล้ว:</span>
-                        <span>คำสั่งซื้อ #00118</span>
-                        <a href="#" class="ms-2 text-decoration-underline small">ตรวจสอบ</a>
-                    </li>
+                <ul class="notification-list mb-0 ps-3" id="notificationList">
+                    <!-- รายการแจ้งเตือนจะถูกแทรกที่นี่ -->
+                    <li>กำลังโหลด...</li>
                 </ul>
             </div>
         </div>

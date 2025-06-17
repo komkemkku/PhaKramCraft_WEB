@@ -8,6 +8,7 @@ function getToken() {
   return localStorage.getItem("jwt_token") || "";
 }
 
+// โหลดสินค้า (สำหรับแสดงชื่อ/ราคา/รูป)
 async function fetchProducts() {
   const res = await fetch(PRODUCT_API);
   products = await res.json();
@@ -32,33 +33,7 @@ async function fetchCart() {
   cart = data.cart;
 }
 
-// เพิ่มสินค้าเข้าตะกร้า (สร้าง cart อัตโนมัติ)
-async function addToCart(product_id, amount = 1) {
-  const token = getToken();
-  if (!token) {
-    alert("กรุณาเข้าสู่ระบบก่อนใช้งานตะกร้า");
-    window.location = "login.html";
-    return;
-  }
-  const res = await fetch(CART_API + "/add", {
-    method: "POST",
-    headers: {
-      Authorization: "Bearer " + token,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ product_id, amount }),
-  });
-  if (!res.ok) {
-    const err = await res.json();
-    alert(err.error || "ไม่สามารถเพิ่มสินค้าได้");
-    return;
-  }
-  await fetchCart();
-  await renderCart();
-  updateCartBadge();
-}
-
-// อัปเดตจำนวนหรือเลือกจ่ายของ cartItem
+// อัปเดตจำนวน/สถานะ selected ของ cartItem
 async function updateCartItem(itemId, amount, selected) {
   const token = getToken();
   let body = {};
@@ -72,7 +47,6 @@ async function updateCartItem(itemId, amount, selected) {
     },
     body: JSON.stringify(body),
   });
-  // อย่า fetchCart() ที่นี่ ให้ทำในฟังก์ชันที่เรียกต่อไปเท่านั้น เพื่อป้องกันการ fetch ซ้ำ
 }
 
 // ลบ cartItem
@@ -102,7 +76,7 @@ window.changeQty = async function (itemId, diff) {
   updateCartBadge();
 };
 
-// เลือกจ่ายแต่ละรายการ
+// เลือก/ไม่เลือกสินค้าแต่ละชิ้น
 window.handleSelect = async function (itemId, checked) {
   await updateCartItem(itemId, undefined, checked);
   await fetchCart();
@@ -224,18 +198,7 @@ document.getElementById("checkoutBtn").addEventListener("click", function () {
     alert("กรุณาเลือกสินค้าที่ต้องการชำระเงิน");
     return;
   }
-  let cartForCheckout = cart.cartitems
-    .filter((item) => item.selected)
-    .map((item) => {
-      const prod = products.find((p) => p.id === item.product_id);
-      return {
-        product_id: item.product_id,
-        name: prod ? prod.name : "",
-        price: prod ? prod.price : 0,
-        qty: item.amount,
-      };
-    });
-  localStorage.setItem("cart_checkout", JSON.stringify(cartForCheckout));
+  // ไม่ใช้ localStorage แล้ว ส่งไป checkout page ให้ backend filter อีกที
   window.location = "checkout.html";
 });
 
@@ -260,4 +223,27 @@ window.addEventListener("DOMContentLoaded", async () => {
 });
 
 // เพิ่มสินค้าตะกร้า ใช้บนหน้าอื่น
-window.addToCart = addToCart;
+window.addToCart = async function (product_id, amount = 1) {
+  const token = getToken();
+  if (!token) {
+    alert("กรุณาเข้าสู่ระบบก่อนใช้งานตะกร้า");
+    window.location = "login.html";
+    return;
+  }
+  const res = await fetch(CART_API + "/add", {
+    method: "POST",
+    headers: {
+      Authorization: "Bearer " + token,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ product_id, amount }),
+  });
+  if (!res.ok) {
+    const err = await res.json();
+    alert(err.error || "ไม่สามารถเพิ่มสินค้าได้");
+    return;
+  }
+  await fetchCart();
+  await renderCart();
+  updateCartBadge();
+};

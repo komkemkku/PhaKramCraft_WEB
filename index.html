@@ -127,7 +127,7 @@
         </div>
     </footer>
 
-    <div class="position-fixed top-0 end-0 p-3" style="z-index: 1080">
+    <!-- <div class="position-fixed top-0 end-0 p-3" style="z-index: 1080">
         <div id="notificationToast" class="toast align-items-center text-bg-light border-0 shadow-lg" role="alert"
             aria-live="assertive" aria-atomic="true">
             <div class="toast-header bg-purple-soft text-purple-dark">
@@ -151,7 +151,7 @@
                 </ul>
             </div>
         </div>
-    </div>
+    </div> -->
 
     <!-- User Account Modal (วางนอก header, ใน body) -->
     <div class="modal fade" id="userModal" tabindex="-1" aria-labelledby="userModalLabel" aria-hidden="true">
@@ -200,6 +200,25 @@
                     <i class="bi bi-check-circle-fill me-2"></i> ออกจากระบบสำเร็จ
                 </div>
                 <button type="button" class="btn-close ms-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast แจ้งเตือน -->
+    <div class="position-fixed top-0 end-0 p-3" style="z-index: 1080">
+        <div id="notificationToast" class="toast align-items-center text-bg-light border-0 shadow-lg" role="alert"
+            aria-live="assertive" aria-atomic="true">
+            <div class="toast-header bg-purple-soft text-purple-dark">
+                <i class="bi bi-bell-fill me-2"></i>
+                <strong class="me-auto">การแจ้งเตือน</strong>
+                <small class="text-muted">ล่าสุด</small>
+                <button type="button" class="btn-close ms-2" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body p-3">
+                <ul class="notification-list mb-0 ps-3" id="notificationList">
+                    <!-- รายการแจ้งเตือนจะถูกแทรกที่นี่ -->
+                    <li>กำลังโหลด...</li>
+                </ul>
             </div>
         </div>
     </div>
