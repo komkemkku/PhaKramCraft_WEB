@@ -17,6 +17,13 @@ function showToastFail() {
     toast.show();
   }
 }
+function showReceivedToast() {
+  var toastEl = document.getElementById("receivedToast");
+  if (toastEl) {
+    var toast = new bootstrap.Toast(toastEl);
+    toast.show();
+  }
+}
 
 // ดึงข้อมูลผู้ใช้
 async function fetchProfile() {
@@ -96,6 +103,7 @@ async function renderOrders(status = "pending") {
   orders.forEach((order) => {
     let statusText = mapStatusToThai(order.status);
     let badgeClass = `status-${order.status}`;
+    let canConfirm = order.status === "delivered" ? false : true;
     listEl.innerHTML += `
       <div class="order-card p-3 mb-3">
         <div class="d-flex justify-content-between align-items-center flex-wrap mb-2">
@@ -125,8 +133,13 @@ async function renderOrders(status = "pending") {
               order.address
             )}</div>
             ${
-              order.tracking
-                ? `<div class="small mt-1">เลขพัสดุ: <span class="fw-semibold">${order.tracking}</span></div>`
+              order.tracking_no
+                ? `<div class="small mt-1">เลขพัสดุ: 
+                  <span class="fw-semibold">${order.tracking_no}</span>
+                  <button class="btn btn-sm btn-link p-0 ps-2" style="font-size:0.95em;" onclick="trackOrder('${order.tracking_no}')">
+                    <i class="bi bi-box-arrow-up-right"></i> ติดตามพัสดุ
+                  </button>
+                  </div>`
                 : ""
             }
           </div>
@@ -136,9 +149,11 @@ async function renderOrders(status = "pending") {
                 ? `<button class="btn btn-sm btn-outline-danger me-2" onclick="cancelOrder('${order.id}')">ยกเลิก</button>
                    <button class="btn btn-sm btn-purple" onclick="payOrder('${order.id}')">ชำระเงิน</button>`
                 : order.status === "shipping"
-                ? `<button class="btn btn-sm btn-outline-primary" onclick="trackOrder('${order.tracking}')">ติดตามพัสดุ</button>`
+                ? order.tracking_no
+                  ? `<button class="btn btn-sm btn-outline-primary" onclick="trackOrder('${order.tracking_no}')">ติดตามพัสดุ</button>`
+                  : `<span class="text-secondary small">รอเลขพัสดุ</span>`
                 : order.status === "delivered"
-                ? `<button class="btn btn-sm btn-success" onclick="confirmReceived('${order.id}')">ยืนยันได้รับสินค้าแล้ว</button>`
+                ? `<button class="btn btn-sm btn-success" onclick="confirmReceived('${order.id}')" disabled>ได้รับสินค้าแล้ว</button>`
                 : ""
             }
           </div>
@@ -166,15 +181,50 @@ window.cancelOrder = async function (id) {
 window.payOrder = function (id) {
   window.location = `payment.html?order=${id}`;
 };
+
+// กดติดตามพัสดุ -> เปิดหน้า track ของไปรษณีย์ไทย
 window.trackOrder = function (tracking) {
-  alert(`ติดตามพัสดุหมายเลข: ${tracking || "ยังไม่ระบุเลขพัสดุ"}`);
+  if (!tracking) {
+    alert("ยังไม่มีเลขพัสดุ");
+    return;
+  }
+  const url = `https://track.thailandpost.co.th/?trackNumber=${encodeURIComponent(
+    tracking
+  )}`;
+  window.open(url, "_blank");
 };
+
+// ยืนยันรับสินค้า (ห้ามแก้ไขสถานะหลังจากนี้)
 window.confirmReceived = async function (id) {
-  if (!confirm("ยืนยันได้รับสินค้าแล้ว?")) return;
-  // ตัวอย่าง: เรียก PATCH /orderUsers/:id/receive (ถ้ามี API นี้)
-  // ถ้าไม่มี API จริง ให้แจ้ง admin หรือติดต่อร้านค้า
-  alert("ขอบคุณที่ยืนยันการรับสินค้า!");
-  renderOrders(currentTabStatus);
+  // SweetAlert2 ยืนยัน
+  const result = await Swal.fire({
+    title: "ยืนยันได้รับสินค้าแล้ว?",
+    icon: "question",
+    showCancelButton: true,
+    confirmButtonText: "ยืนยัน",
+    cancelButtonText: "ยกเลิก",
+  });
+  if (!result.isConfirmed) return;
+
+  const token = localStorage.getItem("jwt_token");
+  // PATCH: เปลี่ยนสถานะเป็น delivered
+  const res = await fetch(`${ORDER_API}/${id}/receive`, {
+    method: "PATCH",
+    headers: { Authorization: "Bearer " + token },
+  });
+  if (res.ok) {
+    // แจ้งเตือนสำเร็จ
+    Swal.fire({
+      icon: "success",
+      title: "ขอบคุณที่ยืนยันรับสินค้า!",
+      text: "ขอให้มีความสุขกับสินค้า 😊",
+      showConfirmButton: false,
+      timer: 2000,
+    });
+    renderOrders(currentTabStatus);
+  } else {
+    Swal.fire("เกิดข้อผิดพลาด", "", "error");
+  }
 };
 
 // ----- Tabs -----
