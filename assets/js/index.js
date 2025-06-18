@@ -1,6 +1,9 @@
-const PRODUCT_API = "https://phakramcraftapi-production.up.railway.app/products";
-const CATEGORY_API = "https://phakramcraftapi-production.up.railway.app/categories";
-const WISHLIST_API = "https://phakramcraftapi-production.up.railway.app/wishlists";
+const PRODUCT_API =
+  "https://phakramcraftapi-production.up.railway.app/products";
+const CATEGORY_API =
+  "https://phakramcraftapi-production.up.railway.app/categories";
+const WISHLIST_API =
+  "https://phakramcraftapi-production.up.railway.app/wishlists";
 const CART_API = "https://phakramcraftapi-production.up.railway.app/carts";
 
 let products = [];
@@ -276,7 +279,14 @@ function renderProducts(list = products) {
     const cartItem = findCartItemByProductId(p.id);
     const inCart = !!cartItem;
     const inWishlist = isInWishlist(p.id);
-    const imgSrc = p.img ? p.img : "/assets/img/placeholder.png";
+
+    // ======= เปลี่ยนตรงนี้ให้ใช้ลิงก์ img ถ้ามี =======
+    const imgSrc =
+      p.img && typeof p.img === "string" && p.img.startsWith("http")
+        ? p.img
+        : "/assets/img/placeholder.png";
+    // ===============================================
+
     const name = p.name ? p.name : "(ไม่ทราบชื่อ)";
     const price =
       p.price !== undefined
@@ -344,7 +354,13 @@ function viewDetail(pid) {
   if (document.getElementById(modalId))
     document.getElementById(modalId).remove();
 
-  const imgSrc = p.img ? p.img : "/assets/img/placeholder.png";
+  // ======= เปลี่ยนตรงนี้ให้ใช้ลิงก์ img ถ้ามี =======
+  const imgSrc =
+    p.img && typeof p.img === "string" && p.img.startsWith("http")
+      ? p.img
+      : "/assets/img/placeholder.png";
+  // ===============================================
+
   const name = p.name ? p.name : "(ไม่ทราบชื่อ)";
   const description = p.description || p.desc || "";
   const price =

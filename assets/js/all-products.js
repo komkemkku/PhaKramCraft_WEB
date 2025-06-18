@@ -1,9 +1,10 @@
-// /assets/js/all-product.js
-
-const PRODUCT_API = "phakramcraftapi-production.up.railway.app/products";
-const CATEGORY_API = "phakramcraftapi-production.up.railway.app/categories";
-const WISHLIST_API = "phakramcraftapi-production.up.railway.app/wishlists";
-const CART_API = "phakramcraftapi-production.up.railway.app/carts";
+const PRODUCT_API =
+  "https://phakramcraftapi-production.up.railway.app/products";
+const CATEGORY_API =
+  "https://phakramcraftapi-production.up.railway.app/categories";
+const WISHLIST_API =
+  "https://phakramcraftapi-production.up.railway.app/wishlists";
+const CART_API = "https://phakramcraftapi-production.up.railway.app/carts";
 const PRODUCTS_PER_PAGE = 8;
 
 let products = [];
@@ -256,6 +257,14 @@ window.gotoPageNum = function (page) {
   renderProductsPaginated(page);
 };
 
+// ===== ช่วยเลือกแหล่งรูปภาพ (img) ที่เหมาะสม =====
+function getProductImage(p) {
+  // แสดง img (ลิงก์) ถ้ามีและเป็น http/https, ถ้าไม่มีก็ใช้ placeholder
+  return p.img && typeof p.img === "string" && /^https?:\/\//.test(p.img)
+    ? p.img
+    : "/assets/img/placeholder.png";
+}
+
 // ===== RENDER PRODUCTS =====
 function renderProducts(list) {
   const productList = document.getElementById("productList");
@@ -268,12 +277,11 @@ function renderProducts(list) {
     const cartItem = findCartItemByProductId(p.id);
     const inCart = !!cartItem;
     const inWishlist = isInWishlist(p.id);
+    const imgSrc = getProductImage(p);
     productList.innerHTML += `
       <div class="col-12 col-sm-6 col-md-4 col-lg-3">
         <div class="product-card h-100">
-          <img src="${p.img || "/assets/img/placeholder.png"}" alt="${
-      p.name
-    }" class="card-img-top mb-2">
+          <img src="${imgSrc}" alt="${p.name}" class="card-img-top mb-2">
           <div class="product-name fw-semibold mb-1">${p.name}</div>
           <div class="text-purple fw-bold fs-5 mb-1">฿${Number(
             p.price
@@ -332,11 +340,12 @@ function viewDetail(pid) {
   if (document.getElementById(modalId))
     document.getElementById(modalId).remove();
 
+  const imgSrc = getProductImage(p);
   const html = `
     <div class="modal fade" id="${modalId}" tabindex="-1" aria-labelledby="modalLabel">
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-          <img src="${p.img || "/assets/img/placeholder.png"}"
+          <img src="${imgSrc}"
                class="w-100 rounded-top" style="object-fit:cover;max-height:240px;" alt="${
                  p.name
                }">
