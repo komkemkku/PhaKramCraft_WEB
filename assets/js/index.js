@@ -1,5 +1,3 @@
-// /assets/js/index.js
-
 const PRODUCT_API = "http://localhost:3000/products";
 const CATEGORY_API = "http://localhost:3000/categories";
 const WISHLIST_API = "http://localhost:3000/wishlists";
@@ -8,17 +6,66 @@ const CART_API = "http://localhost:3000/carts";
 let products = [];
 let categories = [];
 let wishlist = [];
-let cart = null; // จาก API
+let cart = null;
 
-// ===== JWT & Login =====
 function getToken() {
   return localStorage.getItem("jwt_token") || "";
 }
+
+function handleApiAuthError(err) {
+  if (
+    err &&
+    typeof err === "object" &&
+    ((err.error &&
+      (err.error.includes("Token") || err.error.includes("token"))) ||
+      (typeof err === "string" &&
+        (err.includes("Token") || err.includes("token"))))
+  ) {
+    Swal.fire({
+      toast: true,
+      icon: "warning",
+      title: "กรุณาเข้าสู่ระบบ",
+      position: "top-end",
+      showConfirmButton: false,
+      timer: 2000,
+      timerProgressBar: true,
+      allowOutsideClick: false,
+      willClose: () => {
+        window.location.href = "/login.html";
+      },
+    });
+    return true;
+  }
+  return false;
+}
+
+function showLoginToast() {
+  Swal.fire({
+    toast: true,
+    icon: "warning",
+    title: "กรุณาเข้าสู่ระบบก่อนใช้งาน",
+    position: "top-end",
+    showConfirmButton: true,
+    confirmButtonText: "เข้าสู่ระบบ",
+    timer: 3000,
+    timerProgressBar: true,
+    allowOutsideClick: false,
+    allowEscapeKey: false,
+    didOpen: (toast) => {
+      toast.addEventListener("click", () => {
+        window.location.href = "login.html";
+      });
+    },
+    willClose: () => {
+      window.location.href = "login.html";
+    },
+  });
+}
+
 function checkLoginOrRedirect() {
   const token = getToken();
   if (!token) {
-    alert("กรุณาเข้าสู่ระบบก่อนใช้งานฟีเจอร์นี้");
-    window.location.href = "login.html";
+    showLoginToast();
     return false;
   }
   return true;
@@ -31,9 +78,14 @@ async function fetchWishlist() {
     const res = await fetch(WISHLIST_API, {
       headers: { Authorization: "Bearer " + getToken() },
     });
-    if (!res.ok) throw new Error("โหลดสินค้าที่ถูกใจล้มเหลว");
+    if (!res.ok) {
+      const err = await res.json();
+      if (handleApiAuthError(err)) return;
+      throw new Error("โหลดสินค้าที่ถูกใจล้มเหลว");
+    }
     wishlist = await res.json();
   } catch (e) {
+    if (handleApiAuthError(e)) return;
     wishlist = [];
   }
 }
@@ -43,7 +95,7 @@ function isInWishlist(pid) {
 async function toggleWishlist(pid) {
   if (!checkLoginOrRedirect()) return;
   if (!pid) {
-    alert("เกิดข้อผิดพลาด: ไม่พบรหัสสินค้า");
+    Swal.fire("เกิดข้อผิดพลาด", "ไม่พบรหัสสินค้า", "error");
     return;
   }
   const item = wishlist.find((w) => w.product_id === pid);
@@ -55,7 +107,8 @@ async function toggleWishlist(pid) {
       });
       if (!res.ok) {
         const err = await res.json();
-        alert(err.error || "ลบออกจากรายการโปรดล้มเหลว");
+        if (handleApiAuthError(err)) return;
+        Swal.fire("ล้มเหลว", err.error || "ลบออกจากรายการโปรดล้มเหลว", "error");
         return;
       }
       await fetchWishlist();
@@ -63,7 +116,8 @@ async function toggleWishlist(pid) {
       applyFilters();
       updateCartBadge();
     } catch (e) {
-      alert("เกิดข้อผิดพลาดในการลบรายการโปรด");
+      if (handleApiAuthError(e)) return;
+      Swal.fire("เกิดข้อผิดพลาด", "ลบรายการโปรดล้มเหลว", "error");
     }
   } else {
     try {
@@ -77,7 +131,8 @@ async function toggleWishlist(pid) {
       });
       if (!res.ok) {
         const err = await res.json();
-        alert(err.error || "เพิ่มรายการโปรดล้มเหลว");
+        if (handleApiAuthError(err)) return;
+        Swal.fire("ล้มเหลว", err.error || "เพิ่มรายการโปรดล้มเหลว", "error");
         return;
       }
       await fetchWishlist();
@@ -85,7 +140,8 @@ async function toggleWishlist(pid) {
       applyFilters();
       updateCartBadge();
     } catch (e) {
-      alert("เกิดข้อผิดพลาดในการเพิ่มรายการโปรด");
+      if (handleApiAuthError(e)) return;
+      Swal.fire("เกิดข้อผิดพลาด", "เพิ่มรายการโปรดล้มเหลว", "error");
     }
   }
 }
@@ -97,9 +153,15 @@ async function fetchCart() {
     const res = await fetch(CART_API, {
       headers: { Authorization: "Bearer " + getToken() },
     });
+    if (!res.ok) {
+      const err = await res.json();
+      if (handleApiAuthError(err)) return;
+      throw new Error("โหลดตะกร้าสินค้าล้มเหลว");
+    }
     const data = await res.json();
     cart = data.cart;
   } catch (err) {
+    if (handleApiAuthError(err)) return;
     cart = null;
   }
 }
@@ -120,14 +182,16 @@ async function addToCart(product_id, amount = 1) {
     });
     if (!res.ok) {
       const err = await res.json();
-      alert(err.error || "เพิ่มสินค้าล้มเหลว");
+      if (handleApiAuthError(err)) return;
+      Swal.fire("ล้มเหลว", err.error || "เพิ่มสินค้าล้มเหลว", "error");
       return;
     }
     await fetchCart();
     applyFilters();
     updateCartBadge();
   } catch (err) {
-    alert("เกิดข้อผิดพลาดในการเพิ่มสินค้า");
+    if (handleApiAuthError(err)) return;
+    Swal.fire("เกิดข้อผิดพลาด", "เพิ่มสินค้าไม่สำเร็จ", "error");
   }
 }
 async function removeCartItem(itemId) {
@@ -139,14 +203,16 @@ async function removeCartItem(itemId) {
     });
     if (!res.ok) {
       const err = await res.json();
-      alert(err.error || "ลบสินค้าล้มเหลว");
+      if (handleApiAuthError(err)) return;
+      Swal.fire("ล้มเหลว", err.error || "ลบสินค้าล้มเหลว", "error");
       return;
     }
     await fetchCart();
     applyFilters();
     updateCartBadge();
   } catch (err) {
-    alert("เกิดข้อผิดพลาดในการลบสินค้า");
+    if (handleApiAuthError(err)) return;
+    Swal.fire("เกิดข้อผิดพลาด", "ลบสินค้าไม่สำเร็จ", "error");
   }
 }
 window.handleAddToCart = async function (productId) {
