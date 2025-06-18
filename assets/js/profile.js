@@ -1,4 +1,4 @@
-const API_BASE = "http://localhost:3000";
+const API_BASE = "https://phakramcraftapi-production.up.railway.app";
 const TOKEN = localStorage.getItem("jwt_token");
 
 // ดึงข้อมูล user + id
@@ -16,9 +16,14 @@ async function fetchUserProfile() {
 // โหลดข้อมูล user
 document.addEventListener("DOMContentLoaded", async function () {
   try {
-    const res = await fetch("http://localhost:3000/users/me/info", {
-      headers: { Authorization: "Bearer " + localStorage.getItem("jwt_token") },
-    });
+    const res = await fetch(
+      "https://phakramcraftapi-production.up.railway.app/users/me/info",
+      {
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("jwt_token"),
+        },
+      }
+    );
     const data = await res.json();
     user = data.user; // <<== เก็บไว้ทั้ง object
 
@@ -81,14 +86,17 @@ document
 
     // ส่งไป PATCH
     try {
-      const res = await fetch(`http://localhost:3000/users/${user.id}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: "Bearer " + localStorage.getItem("jwt_token"),
-        },
-        body: JSON.stringify(updatedUser),
-      });
+      const res = await fetch(
+        `https://phakramcraftapi-production.up.railway.app/users/${user.id}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + localStorage.getItem("jwt_token"),
+          },
+          body: JSON.stringify(updatedUser),
+        }
+      );
       const data = await res.json();
 
       if (!res.ok) throw new Error(data.error || "บันทึกไม่สำเร็จ");

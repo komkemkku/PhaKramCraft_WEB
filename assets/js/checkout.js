@@ -1,6 +1,6 @@
-const ADDRESS_API = "http://localhost:3000/addresses";
-const CART_API = "http://localhost:3000/carts";
-const CHECKOUT_API = "http://localhost:3000/checkouts";
+const ADDRESS_API = "https://phakramcraftapi-production.up.railway.app/addresses";
+const CART_API = "https://phakramcraftapi-production.up.railway.app/carts";
+const CHECKOUT_API = "https://phakramcraftapi-production.up.railway.app/checkouts";
 
 // ==== STATE ====
 let addresses = [];

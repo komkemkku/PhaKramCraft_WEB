@@ -1,5 +1,5 @@
-const ORDER_API = "http://localhost:3000/orderUsers";
-const ORDERPAY_API = "http://localhost:3000/order-payments";
+const ORDER_API = "https://phakramcraftapi-production.up.railway.app/orderUsers";
+const ORDERPAY_API = "https://phakramcraftapi-production.up.railway.app/order-payments";
 
 // อ่าน order id จาก url
 function getOrderId() {

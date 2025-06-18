@@ -1,5 +1,5 @@
-const ADDRESS_API = "http://localhost:3000/addresses";
-const PROFILE_API = "http://localhost:3000/users/me/info";
+const ADDRESS_API = "https://phakramcraftapi-production.up.railway.app/addresses";
+const PROFILE_API = "https://phakramcraftapi-production.up.railway.app/users/me/info";
 
 let addresses = [];
 let editingId = null;

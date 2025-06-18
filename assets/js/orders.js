@@ -1,5 +1,6 @@
-const ORDER_API = "http://localhost:3000/orderUsers";
-const PROFILE_API = "http://localhost:3000/users/me/info";
+const ORDER_API = "https://phakramcraftapi-production.up.railway.app/orderUsers";
+const PROFILE_API =
+  "https://phakramcraftapi-production.up.railway.app/users/me/info";
 let currentTabStatus = "pending"; // อังกฤษเท่านั้น
 
 // Toast helper

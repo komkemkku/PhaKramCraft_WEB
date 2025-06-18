@@ -1,5 +1,5 @@
-const CART_API = "http://localhost:3000/carts";
-const PRODUCT_API = "http://localhost:3000/products";
+const CART_API = "https://phakramcraftapi-production.up.railway.app/carts";
+const PRODUCT_API = "https://phakramcraftapi-production.up.railway.app/products";
 
 let cart = null;
 let products = [];

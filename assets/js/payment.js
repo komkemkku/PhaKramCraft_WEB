@@ -1,5 +1,5 @@
-const ORDER_API = "http://localhost:3000/orderUsers";
-const PAYMENTSYSTEMS_API = "http://localhost:3000/paymentsystems";
+const ORDER_API = "https://phakramcraftapi-production.up.railway.app/orderUsers";
+const PAYMENTSYSTEMS_API = "https://phakramcraftapi-production.up.railway.app/paymentsystems";
 const SHIPPING_COST = 50;
 
 // ----- Utility สำหรับแสดงที่อยู่ -----

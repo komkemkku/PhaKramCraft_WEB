@@ -1,7 +1,7 @@
-const PRODUCT_API = "http://localhost:3000/products";
-const CATEGORY_API = "http://localhost:3000/categories";
-const WISHLIST_API = "http://localhost:3000/wishlists";
-const CART_API = "http://localhost:3000/carts";
+const PRODUCT_API = "https://phakramcraftapi-production.up.railway.app/products";
+const CATEGORY_API = "https://phakramcraftapi-production.up.railway.app/categories";
+const WISHLIST_API = "https://phakramcraftapi-production.up.railway.app/wishlists";
+const CART_API = "https://phakramcraftapi-production.up.railway.app/carts";
 
 let products = [];
 let categories = [];
