@@ -80,12 +80,8 @@
                             <h3 class="fw-bold text-purple mb-4">
                                 <i class="bi bi-receipt-cutoff me-2"></i> ยืนยันการชำระเงิน
                             </h3>
-                            <form id="paymentConfirmForm">
-                                <div class="mb-3">
-                                    <label class="form-label text-purple" for="slip">แนบสลิปการโอน <span
-                                            class="text-danger">*</span></label>
-                                    <input class="form-control" type="file" id="slip" accept="image/*" required>
-                                </div>
+                            <div id="orderInfo"></div>
+                            <form id="paymentConfirmForm" autocomplete="off">
                                 <div class="mb-3">
                                     <label class="form-label text-purple" for="transferDate">วันที่โอนเงิน <span
                                             class="text-danger">*</span></label>
@@ -108,6 +104,7 @@
             </div>
         </div>
     </main>
+
     <!-- Footer -->
     <footer class="footer-custom py-4 mt-auto">
         <div class="container">
